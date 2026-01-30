@@ -1,0 +1,23 @@
+2026-01-28 16:58:28,523 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.8:5000
+2026-01-28 16:58:28,524 - INFO - [33mPress CTRL+C to quit[0m
+2026-01-28 16:58:39,049 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.8:5000
+2026-01-28 16:58:39,049 - INFO - [33mPress CTRL+C to quit[0m
+2026-01-28 17:12:20,451 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.8:5000
+2026-01-28 17:12:20,456 - INFO - [33mPress CTRL+C to quit[0m
+2026-01-28 17:22:48,057 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.8:5000
+2026-01-28 17:22:48,057 - INFO - [33mPress CTRL+C to quit[0m
+2026-01-28 17:23:19,228 - INFO - 127.0.0.1 - - [28/Jan/2026 17:23:19] "OPTIONS /send_cmd_local HTTP/1.1" 200 -
+2026-01-28 17:23:19,715 - INFO - ✅ Sent to 972524247005@c.us: 🤖 הבוט והשרת מח...
+2026-01-28 17:23:19,716 - INFO - 127.0.0.1 - - [28/Jan/2026 17:23:19] "POST /send_cmd_local HTTP/1.1" 200 -

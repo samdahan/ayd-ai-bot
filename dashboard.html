@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/180/a78bfa/ffffff?text=SYD">
+
+    <!-- Version: 3.0 - Mobile Optimized -->
+    <title>SYD-AI | Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #a78bfa;
+            /* Purple */
+            --secondary: #fbbf24;
+            /* Gold */
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --border: #334155;
+            --accent: #10b981;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Heebo', sans-serif;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        /* --- LOGO STYLING --- */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            /* Try to load png, then jpg, then placeholder */
+            background-image: url('logo.png'), url('logo.jpg'), url('https://via.placeholder.com/180/a78bfa/ffffff?text=SYD-AI');
+            background-size: cover;
+            background-position: center;
+            /* Glow effects */
+            box-shadow: 0 0 30px rgba(167, 139, 250, 0.2);
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            position: relative;
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(90deg, #1e293b, #0f172a);
+            border-top: 1px solid var(--primary);
+            border-bottom: 1px solid var(--primary);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        /* --- CARDS GRID (2x2) --- */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            /* Wider minmax -> 2 per row */
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 96, 0.1);
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            margin: 10px 0 5px 0;
+            color: #fbbf24;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #94a3b8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #22c55e;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        /* --- LISTS --- */
+        .section-title {
+            max-width: 800px;
+            margin: 0 auto 15px auto;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .events-list {
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .event-row {
+            background: #1e293b;
+            border-right: 4px solid #fbbf24;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .event-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .event-date {
+            background: #0f172a;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #00f260;
+            font-family: monospace;
+        }
+
+        .send-btn {
+            background: #fbbf24;
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .send-btn:hover {
+            background: #f59e0b;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <!-- Tries to load logo.png, falls back to existing ai_icon.ico -->
+        <img src="logo.png" onerror="this.src='ai_icon.ico'" class="logo-container" alt="DOBISAM Logo"
+            style="object-fit: contain; background: transparent; border: none; box-shadow: none;">
+
+        <h1>SYD-AI</h1>
+        <div class="subtitle">הסוכן החכם של SAM DAHAN</div>
+    </div>
+
+    <div class="welcome-banner">
+        שלום! אני SYD-AI, הסוכן החכם של SAM DAHAN. איך אפשר לעזור היום?
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="cards-container">
+        <!-- Status Card -->
+        <div class="card">
+            <div class="status-badge" id="statusText">
+                <i class="fas fa-check"></i> בבדיקה...
+            </div>
+            <h3 id="statusPhone">--</h3>
+            <p>מחובר ל-WhatsApp (Green API)</p>
+        </div>
+
+        <!-- Add Manager -->
+        <div class="card" onclick="alert('פונקציה זו בפיתוח')">
+            <div class="card-icon">👤</div>
+            <h3>הוספת מנהל</h3>
+            <p>חיבור מנהל נוסף למערכת</p>
+        </div>
+
+        <!-- Add Event -->
+        <div class="card" onclick="openModal('event')">
+            <div class="card-icon" style="color: #fbbf24;">📅</div>
+            <h3>הוספת שמחה/אירוע</h3>
+            <p>ימי הולדת, חתונות ותאריכים חשובים</p>
+        </div>
+
+        <!-- General Message -->
+        <div class="card" onclick="openModal('general')">
+            <div class="card-icon" style="color: #60a5fa;">💬</div>
+            <h3>הודעה כללית</h3>
+            <p>תזמון הודעה עתידית לפי תאריך</p>
+        </div>
+
+        <!-- Groups Management -->
+        <div class="card" onclick="openGroupsModal()">
+            <div class="card-icon" style="color: #a78bfa;">👥</div>
+            <h3>ניהול קבוצות</h3>
+            <p>יצירת רשימות תפוצה (משפחה, חברים)</p>
+        </div>
+
+        <!-- Refresh System -->
+        <div class="card" onclick="location.reload()">
+            <div class="card-icon" style="color: #ffffff;">🔄</div>
+            <h3>רענן מערכת</h3>
+            <p>טען מחדש את הנתונים והמסך</p>
+        </div>
+
+        <!-- View Events Window -->
+        <div class="card" onclick="openEventsModal()">
+            <div class="card-icon" style="color: #fca5a5;">🎂</div>
+            <h3>שמחות קרובות</h3>
+            <p>חלון לרשימת האירועים והשמחות</p>
+        </div>
+
+        <!-- RECEIVED / REGISTRANTS -->
+        <div class="card" onclick="openReceivedModal()">
+            <div class="card-icon" style="color: #6ee7b7;">📥</div>
+            <h3>התקבל</h3>
+            <p>רשימת כל הנרשמים והמספרים במערכת</p>
+        </div>
+
+        <!-- Broadcast Message -->
+        <div class="card" onclick="openBroadcastModal()">
+            <div class="card-icon" style="color: #ef4444;">📢</div>
+            <h3>שידור הודעה לקבוצה</h3>
+            <p>שליחת הודעה מיידית לקבוצה נבחרת</p>
+        </div>
+
+        <!-- Bot Response Settings -->
+        <div class="card" onclick="openResponseModal()">
+            <div class="card-icon" style="color: #fbbf24;">🤖</div>
+            <h3>תשובת הבוט</h3>
+            <p>הגדרת הודעת התגובה האוטומטית</p>
+        </div>
+    </div>
+
+    <!-- BOT RESPONSE MODAL -->
+    <div id="responseModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('responseModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; margin-bottom:20px; color:#fbbf24;">🤖 הגדרת תשובת הבוט</h2>
+
+            <div class="form-group">
+                <label>נוסח התגובה האוטומטית (כשאין תשובה חכמה)</label>
+                <textarea id="botResponseText" class="form-control" rows="4"
+                    placeholder="תודה רבה! בשמי ובשם הצוות 🙏"></textarea>
+            </div>
+
+            <div class="form-group" style="margin-top:20px; border-top: 1px solid #334155; padding-top: 20px;">
+                <label style="color: #60a5fa;">🔑 מפתח Gemini API (לבינה מלאכותית חכמה)</label>
+                <input type="password" id="geminiApiKey" class="form-control" placeholder="הכנס מפתח API כאן...">
+                <p style="font-size: 0.75em; color: #94a3b8; margin-top: 5px;">* המפתח מאפשר לבוט לענות על כל שאלה בעזרת
+                    בינה מלאכותית.</p>
+            </div>
+
+            <!-- Emoji Picker -->
+            <div
+                style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; background: #0f172a; padding: 10px; border-radius: 10px;">
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🙏')">🙏</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('😊')">😊</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🌹')">🌹</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('✨')">✨</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🤖')">🤖</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('💎')">💎</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('❤️')">❤️</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('✅')">✅</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🚀')">🚀</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🎉')">🎉</span>
+            </div>
+
+            <button class="submit-btn" onclick="saveBotResponse()">💾 שמור הגדרות</button>
+        </div>
+    </div>
+
+    <!-- BROADCAST MODAL -->
+    <div id="broadcastModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('broadcastModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; margin-bottom:20px; color:#ef4444;">📢 שידור הודעה לקבוצה</h2>
+
+            <div class="form-group">
+                <label>בחר קבוצת יעד</label>
+                <select id="broadcastGroupSelect" class="form-control">
+                    <option value="all">כל הרשומים (כולם)</option>
+                    <!-- Groups populated by JS -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>תוכן ההודעה</label>
+                <textarea id="broadcastMsgText" class="form-control" rows="4"
+                    placeholder="כתוב את ההודעה כאן..."></textarea>
+            </div>
+
+            <div
+                style="background: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #334155;">
+                <label style="color: #fbbf24; font-weight: bold; display: block; margin-bottom: 10px;">📅 תזמון שליחה
+                    (אופציונלי)</label>
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.8em; color: #94a3b8;">תאריך</label>
+                        <input type="date" id="broadcastDate" class="form-control">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.8em; color: #94a3b8;">שעה</label>
+                        <input type="time" id="broadcastTime" class="form-control">
+                    </div>
+                </div>
+                <p style="font-size: 0.75em; color: #94a3b8; margin-top: 5px;">* השאר ריק לשליחה מיידית</p>
+            </div>
+
+            <button class="submit-btn" style="background: #ef4444;" id="broadcastBtn" onclick="sendBroadcast()">🚀
+                שלח/תזמן שידור</button>
+        </div>
+    </div>
+
+    <!-- EVENTS MODAL -->
+    <div id="eventsWindow" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('eventsWindow').style.display='none'">&times;</span>
+            <h2 style="text-align:center; color:#fca5a5; margin-bottom:20px;">🎉 שמחות קרובות</h2>
+            <div id="windowEventsList"
+                style="max-height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+    </div>
+
+    <!-- RECEIVED MODAL -->
+    <div id="receivedModal" class="modal">
+        <div class="modal-content" style="max-height:80vh; overflow-y:auto;">
+            <span class="close-btn"
+                onclick="document.getElementById('receivedModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; color:#6ee7b7; margin-bottom:20px;">📜 התקבל - כל הנרשמים</h2>
+
+            <table style="width:100%; border-collapse: collapse; color: white;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #334155; text-align:right;">
+                        <th style="padding:10px;">שם</th>
+                        <th style="padding:10px;">טלפון</th>
+                        <th style="padding:10px;">קבוצה</th>
+                        <th style="padding:10px;">פעולות</th>
+                    </tr>
+                </thead>
+                <tbody id="receivedListBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- UPCOMING EVENTS -->
+    <div class="section-title">
+        <h3>🎉 שמחות קרובות (עתידי)</h3>
+        <button onclick="loadEvents()"
+            style="background:none; border:none; color:#fbbf24; cursor:pointer; font-size:1.2em;" title="רענן רשימה">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+    </div>
+    <div class="events-list" id="eventsList">
+        <!-- Events will be loaded here -->
+    </div>
+
+    <!-- MODAL (Add Event/Msg) -->
+    <div id="mainModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle" style="text-align:center; margin-bottom:20px; color:#fbbf24;">הוספת שמחה חדשה</h2>
+
+            <div class="form-group">
+                <label>שם / כותרת</label>
+                <input type="text" id="evtName" class="form-control" placeholder="למשל: יוסף דהן">
+            </div>
+
+            <!-- Phone (Optional for owner) -->
+            <div class="form-group" id="ownerPhoneGroup">
+                <label>טלפון של בעל השמחה (אופציונלי)</label>
+                <input type="text" id="evtOwnerPhone" class="form-control" placeholder="+972...">
+            </div>
+
+            <div class="form-group">
+                <label>סוג תאריך</label>
+                <div class="radio-group">
+                    <label style="color:white; font-weight:normal"><input type="radio" name="dateType" value="hebrew"
+                            onclick="toggleDateInputs()"> עברי</label>
+                    <label style="color:white; font-weight:normal"><input type="radio" name="dateType" value="gregorian"
+                            checked onclick="toggleDateInputs()"> לועזי</label>
+                </div>
+            </div>
+
+            <div class="form-group" id="gregorianInput">
+                <label>תאריך לועזי</label>
+                <input type="date" id="evtDateG" class="form-control">
+            </div>
+
+            <div class="form-group" id="hebrewInput" style="display:none;">
+                <label>תאריך עברי</label>
+                <div style="display:flex; gap:10px;">
+                    <select id="hebrewDay" class="form-control">
+                        <option value="">יום</option>
+                    </select>
+                    <select id="hebrewMonth" class="form-control">
+                        <option value="">חודש</option>
+                        <option value="תשרי">תשרי</option>
+                        <option value="חשוון">חשוון</option>
+                        <option value="כסלו">כסלו</option>
+                        <option value="טבת">טבת</option>
+                        <option value="שבט">שבט</option>
+                        <option value="אדר">אדר</option>
+                        <option value="אדר א">אדר א'</option>
+                        <option value="אדר ב">אדר ב'</option>
+                        <option value="ניסן">ניסן</option>
+                        <option value="אייר">אייר</option>
+                        <option value="סיוון">סיוון</option>
+                        <option value="תמוז">תמוז</option>
+                        <option value="אב">אב</option>
+                        <option value="אלול">אלול</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>הודעה שתישלח (ניתן לעריכה)</label>
+                <textarea id="evtMsg" class="form-control" rows="2">מזל טוב! 🎉</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>לאן לשלוח את הברכה?</label>
+                <input type="text" id="evtTargetPhone" class="form-control" placeholder="הכנס מספר...">
+                <div style="font-size:0.8em; color:#94a3b8; margin-top:3px;">ניתן להכניס מספר אחד או יותר (מופרדים
+                    בפסיק).</div>
+            </div>
+
+            <div class="form-group">
+                <label>שייך לקבוצה (אופציונלי)</label>
+                <select id="evtGroup" class="form-control">
+                    <option value="">בחר קבוצה...</option>
+                    <option value="family">משפחה מורחבת</option>
+                    <option value="friends">חברים</option>
+                    <option value="work">עבודה</option>
+                </select>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="submit-btn" onclick="saveEvent()" style="flex:1;">💾 שמור במערכת</button>
+                <button class="submit-btn" onclick="sendEventNow()"
+                    style="flex:1; background: linear-gradient(90deg, #f59e0b, #d97706);">🚀 שלח עכשיו</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GROUPS MODAL -->
+    <div id="groupsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('groupsModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; margin-bottom:20px; color:#a78bfa;">ניהול קבוצות תפוצה</h2>
+
+            <div style="margin-bottom:20px; border-bottom:1px solid #334155; padding-bottom:15px;">
+                <label style="color:#a78bfa; font-weight:bold;">צור קבוצה חדשה:</label>
+                <div style="display:flex; gap:10px; margin-top:5px;">
+                    <input type="text" id="newGroupName" class="form-control" placeholder="שם הקבוצה (למשל: דודים)">
+                    <button class="submit-btn" style="width:auto; margin:0; background:#a78bfa;"
+                        onclick="createGroup()">צור</button>
+                </div>
+            </div>
+
+            <h3 style="color:white; font-size:1.1em;">קבוצות קיימות:</h3>
+            <div id="groupsList"
+                style="max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+                <!-- Groups will load here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DYNAMIC API URL - Use same host for deployment
+        const API_URL = window.location.origin + "/api";
+        const BOT_ID = "7103495194";
+        let currentType = 'birthday';
+
+        window.onload = function () {
+            populateHebrewDays();
+            checkStatus();
+            loadEvents();
+
+            // Auto-refresh every 10 seconds
+            setInterval(() => {
+                loadEvents();
+                // If groups modal is open, refresh groups too? Maybe overkill, but loadEvents is good.
+                checkStatus();
+            }, 10000);
+        };
+
+        // --- GROUPS LOGIC ---
+
+        // Helper function to escape HTML special characters
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        let allGroups = [];
+
+        function openGroupsModal() {
+            document.getElementById('groupsModal').style.display = 'flex';
+            loadGroupsDisplay();
+        }
+
+        async function loadGroupsDisplay() {
+            try {
+                const res = await fetch(`${API_URL}/groups`);
+                allGroups = await res.json();
+
+                const list = document.getElementById('groupsList');
+                list.innerHTML = '';
+
+                if (allGroups.length === 0) {
+                    list.innerHTML = '<div style="color:#94a3b8; text-align:center;">אין קבוצות עדיין. צור את הראשונה!</div>';
+                    return;
+                }
+
+                allGroups.forEach(g => {
+                    const el = document.createElement('div');
+                    el.style.cssText = "padding:10px; background:#0f172a; border-radius:5px; border-right:3px solid #a78bfa; margin-bottom:5px; cursor:pointer;";
+                    el.innerHTML = `
+                        <div style="font-weight:bold;">${g.name}</div>
+                        <div style="font-size:0.8em; color:#94a3b8;">${g.members.length} חברים - לחץ לפירוט</div>
+                        <div class="members-view" id="members-${g.id}" style="display:none; margin-top:10px; border-top:1px solid #334155; padding-top:10px;">
+                            ${g.members.map((m, idx) => {
+                        // Store member data globally to avoid escaping issues
+                        const memberId = `gm-${g.id}-${idx}`;
+                        window.groupMembersData = window.groupMembersData || {};
+                        window.groupMembersData[memberId] = { groupId: g.id, idx: idx, phone: m.phone, name: m.name };
+
+                        const safeName = escapeHtml(m.name);
+                        const safePhone = escapeHtml(m.phone);
+
+                        return `
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; padding:5px; background:#1e293b; border-radius:3px;">
+                                    <div class="member-display-${memberId}" style="flex:1;">
+                                        <span><i class="fas fa-user"></i> ${safeName} (${safePhone})</span>
+                                    </div>
+                                    <div class="member-edit-${memberId}" style="display:none; flex:1; gap:5px;">
+                                        <input class="edit-name-${memberId}" value="${safeName}" style="width:100px; background:#0f172a; border:1px solid #334155; color:white; padding:3px; border-radius:3px;">
+                                        <input class="edit-phone-${memberId}" value="${safePhone}" style="width:120px; background:#0f172a; border:1px solid #334155; color:white; padding:3px; border-radius:3px;">
+                                    </div>
+                                    <div style="display:flex; gap:5px;">
+                                        <button class="edit-member-btn-${memberId}" data-member-id="${memberId}" onclick="event.stopPropagation(); toggleEditMemberNew('${memberId}')" title="ערוך" style="background:none; border:none; color:#fbbf24; cursor:pointer;">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="save-member-btn-${memberId}" data-member-id="${memberId}" onclick="event.stopPropagation(); saveEditMemberNew('${memberId}')" title="שמור" style="display:none; background:none; border:none; color:#22c55e; cursor:pointer;">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button onclick="event.stopPropagation(); deleteMember(${g.id}, '${safePhone}')" title="מחק" style="background:none; border:none; color:#ef4444; cursor:pointer;">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                    }).join('')}
+                            <div style="margin-top:10px; display:flex; gap:5px;">
+                                <input id="newName-${g.id}" placeholder="שם" style="width:80px; background:#1e293b; border:none; color:white; padding:5px;">
+                                <input id="newPhone-${g.id}" placeholder="טלפון" style="width:100px; background:#1e293b; border:none; color:white; padding:5px;">
+                                <button class="add-member-btn" data-group-id="${g.id}" style="background:#22c55e; border:none; color:white; cursor:pointer; padding:5px 10px;">+</button>
+                            </div>
+                        </div>
+                    `;
+
+                    // Add click handler for add member button
+                    el.addEventListener('click', (e) => {
+                        // Handle add member button
+                        if (e.target.classList.contains('add-member-btn')) {
+                            e.stopPropagation();
+                            const groupId = e.target.getAttribute('data-group-id');
+                            addMember(groupId, e);
+                            return;
+                        }
+
+                        // Don't toggle if clicking on inputs or other buttons
+                        if (e.target.tagName === 'INPUT') return;
+                        if (e.target.tagName === 'BUTTON' && !e.target.classList.contains('add-member-btn')) return;
+                        if (e.target.tagName === 'I') return; // Font awesome icons
+
+                        // Toggle view
+                        const view = document.getElementById(`members-${g.id}`);
+                        if (view) {
+                            view.style.display = view.style.display === 'none' ? 'block' : 'none';
+                        }
+                    });
+
+                    list.appendChild(el);
+                });
+            } catch (e) { console.error('Groups error', e); }
+        }
+
+        async function createGroup() {
+            const name = document.getElementById('newGroupName').value;
+            if (!name) return;
+
+            await fetch(`${API_URL}/groups/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+
+            document.getElementById('newGroupName').value = '';
+            loadGroupsDisplay();
+        }
+
+        async function addMember(groupId, event) {
+            event.stopPropagation(); // prevent closing accordion
+            const nameInput = document.getElementById(`newName-${groupId}`);
+            const phoneInput = document.getElementById(`newPhone-${groupId}`);
+
+            if (!nameInput || !phoneInput) {
+                alert('שגיאה: לא נמצאו שדות קלט. ID: ' + groupId);
+                console.error('Inputs not found for groupId:', groupId);
+                return;
+            }
+
+            const name = nameInput.value.trim();
+            const phone = phoneInput.value.trim();
+
+            if (!name || !phone) return alert('חובה למלא שם וטלפון');
+
+            try {
+                await fetch(`${API_URL}/groups/add_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, name, phone })
+                });
+
+                // Clear inputs
+                nameInput.value = '';
+                phoneInput.value = '';
+
+                // Reload groups display
+                await loadGroupsDisplay();
+
+                // Re-open the group that was just edited
+                setTimeout(() => {
+                    const view = document.getElementById(`members-${groupId}`);
+                    if (view) view.style.display = 'block';
+                }, 100);
+
+            } catch (e) {
+                alert('שגיאה בהוספת חבר לקבוצה: ' + e.message);
+                console.error(e);
+            }
+        }
+
+        // Toggle edit mode for a member
+        function toggleEditMember(groupId, memberIdx, phone) {
+            const displayDiv = document.querySelector(`.member-display-${groupId}-${memberIdx}`);
+            const editDiv = document.querySelector(`.member-edit-${groupId}-${memberIdx}`);
+            const editBtn = document.querySelector(`.edit-member-btn-${groupId}-${memberIdx}`);
+            const saveBtn = document.querySelector(`.save-member-btn-${groupId}-${memberIdx}`);
+
+            if (displayDiv && editDiv && editBtn && saveBtn) {
+                const isEditing = editDiv.style.display !== 'none';
+
+                if (isEditing) {
+                    // Cancel edit
+                    displayDiv.style.display = 'flex';
+                    editDiv.style.display = 'none';
+                    editBtn.style.display = 'inline-block';
+                    saveBtn.style.display = 'none';
+                } else {
+                    // Start edit
+                    displayDiv.style.display = 'none';
+                    editDiv.style.display = 'flex';
+                    editBtn.style.display = 'none';
+                    saveBtn.style.display = 'inline-block';
+                }
+            }
+        }
+
+        // Save edited member
+        async function saveEditMember(groupId, memberIdx, oldPhone) {
+            const nameInput = document.querySelector(`.edit-name-${groupId}-${memberIdx}`);
+            const phoneInput = document.querySelector(`.edit-phone-${groupId}-${memberIdx}`);
+
+            if (!nameInput || !phoneInput) return;
+
+            const newName = nameInput.value.trim();
+            const newPhone = phoneInput.value.trim();
+
+            if (!newName || !newPhone) return alert('חובה למלא שם וטלפון');
+
+            try {
+                // Delete old member
+                await fetch(`${API_URL}/groups/delete_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, phone: oldPhone })
+                });
+
+                // Add updated member
+                await fetch(`${API_URL}/groups/add_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, name: newName, phone: newPhone })
+                });
+
+                // Reload groups display
+                await loadGroupsDisplay();
+
+                // Re-open the group
+                setTimeout(() => {
+                    const view = document.getElementById(`members-${groupId}`);
+                    if (view) view.style.display = 'block';
+                }, 100);
+
+            } catch (e) {
+                alert('שגיאה בעדכון חבר: ' + e.message);
+                console.error(e);
+            }
+        }
+
+        // New functions that work with memberId
+        function toggleEditMemberNew(memberId) {
+            console.log("Toggle edit for:", memberId);
+            const displayDiv = document.querySelector(`.member-display-${memberId}`);
+            const editDiv = document.querySelector(`.member-edit-${memberId}`);
+            const editBtn = document.querySelector(`.edit-member-btn-${memberId}`);
+            const saveBtn = document.querySelector(`.save-member-btn-${memberId}`);
+
+            if (!displayDiv || !editDiv || !editBtn || !saveBtn) {
+                console.error("Elements not found for:", memberId);
+                return;
+            }
+
+            const isEditing = editDiv.style.display !== 'none';
+            if (isEditing) {
+                displayDiv.style.display = 'flex';
+                editDiv.style.display = 'none';
+                editBtn.style.display = 'inline-block';
+                saveBtn.style.display = 'none';
+            } else {
+                displayDiv.style.display = 'none';
+                editDiv.style.display = 'flex';
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'inline-block';
+            }
+        }
+
+        async function saveEditMemberNew(memberId) {
+            const data = window.groupMembersData[memberId];
+            if (!data) return;
+
+            const nameInput = document.querySelector(`.edit-name-${memberId}`);
+            const phoneInput = document.querySelector(`.edit-phone-${memberId}`);
+
+            if (!nameInput || !phoneInput) return;
+
+            const newName = nameInput.value.trim();
+            const newPhone = phoneInput.value.trim();
+
+            if (!newName || !newPhone) return alert('חובה למלא שם וטלפון');
+
+            try {
+                // Delete old member
+                await fetch(`${API_URL}/groups/delete_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: data.groupId, phone: data.phone })
+                });
+
+                // Add updated member
+                await fetch(`${API_URL}/groups/add_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: data.groupId, name: newName, phone: newPhone })
+                });
+
+                // Reload groups display
+                await loadGroupsDisplay();
+
+                // Re-open the group
+                setTimeout(() => {
+                    const view = document.getElementById(`members-${data.groupId}`);
+                    if (view) view.style.display = 'block';
+                }, 100);
+
+            } catch (e) {
+                alert('שגיאה בעדכון חבר: ' + e.message);
+                console.error(e);
+            }
+        }
+        // --------------------
+
+        function populateHebrewDays() {
+            const select = document.getElementById('hebrewDay');
+            const hebrewDays = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "יא", "יב", "יג", "יד", "טו", "טז", "יז", "יח", "יט", "כ", "כא", "כב", "כג", "כד", "כה", "כו", "כז", "כח", "כט", "ל"];
+            hebrewDays.forEach(day => {
+                const opt = document.createElement('option');
+                opt.value = day;
+                opt.innerText = day;
+                select.appendChild(opt);
+            });
+        }
+
+        function toggleDateInputs() {
+            const isHebrew = document.querySelector('input[name="dateType"]:checked').value === 'hebrew';
+            document.getElementById('gregorianInput').style.display = isHebrew ? 'none' : 'block';
+            document.getElementById('hebrewInput').style.display = isHebrew ? 'block' : 'none';
+        }
+
+        function openModal(type) {
+            currentType = type;
+            const modal = document.getElementById('mainModal');
+            const title = document.getElementById('modalTitle');
+            const msgBox = document.getElementById('evtMsg');
+
+            if (type === 'general') {
+                title.innerText = "תזמון הודעה כללית";
+                msgBox.value = "";
+                // Hide owner phone for general msgs? maybe keep it
+            } else {
+                title.innerText = "הוספת שמחה חדשה";
+                msgBox.value = "מזל טוב! 🎉";
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('mainModal').style.display = 'none';
+            editingEventId = null; // Reset editing state
+        }
+
+        async function checkStatus() {
+            try {
+                const res = await fetch(`${API_URL}/status`);
+                const data = await res.json();
+                const badge = document.getElementById('statusText');
+                if (data.status === 'connected') {
+                    badge.innerHTML = '<i class="fas fa-check"></i> מחובר';
+                    badge.style.borderColor = '#22c55e';
+                    badge.style.color = '#22c55e';
+                    document.getElementById('statusPhone').innerText = data.phone;
+                } else {
+                    badge.innerHTML = '<i class="fas fa-times"></i> מנותק';
+                    badge.style.borderColor = 'red';
+                    badge.style.color = 'red';
+                }
+            } catch (e) { console.error('API Error', e); }
+        }
+
+        function openEventsModal() {
+            document.getElementById('eventsWindow').style.display = 'flex';
+            loadEvents(); // ensuring fresh data
+        }
+
+        async function loadEvents() {
+            try {
+                const res = await fetch(`${API_URL}/events`);
+                const events = await res.json();
+
+                // Populate BOTH lists
+                const lists = [document.getElementById('eventsList'), document.getElementById('windowEventsList')];
+
+                lists.forEach(list => {
+                    if (!list) return;
+                    list.innerHTML = '';
+                    if (events.length === 0) {
+                        list.innerHTML = '<div style="text-align:center; color:#94a3b8;">אין אירועים קרובים</div>';
+                        return;
+                    }
+
+                    events.forEach(evt => {
+                        const dateDisplay = evt.date_type === 'hebrew' ? evt.hebrew_date : evt.gregorian_date;
+                        const row = document.createElement('div');
+                        row.className = 'event-row';
+                        row.innerHTML = `
+                            <div class="event-info">
+                                <div class="event-date">${dateDisplay}</div>
+                                <div style="font-size:1.5em">${evt.type === 'general' ? '💬' : '🎂'}</div>
+                                <div>
+                                    <div style="font-weight:bold; font-size:1.1em;">${evt.owner}</div>
+                                    <div style="font-size:0.8em; color:#94a3b8">${evt.msg_template.substring(0, 30)}...</div>
+                                </div>
+                            </div>
+                            <button class="send-btn" onclick="sendNow('${evt.target_phone}', '${evt.msg_template}')">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        `;
+                        list.appendChild(row);
+                    });
+                });
+            } catch (e) { console.error('Load Events', e); }
+        }
+
+        async function saveEvent() {
+            const hDay = document.getElementById('hebrewDay').value;
+            const hMonth = document.getElementById('hebrewMonth').value;
+            const fullHebrew = (hDay && hMonth) ? `${hDay} ב${hMonth}` : '';
+
+            const data = {
+                owner: document.getElementById('evtName').value,
+                owner_phone: document.getElementById('evtOwnerPhone').value,
+                type: currentType,
+                date_type: document.querySelector('input[name="dateType"]:checked').value,
+                gregorian_date: document.getElementById('evtDateG').value,
+                hebrew_date: fullHebrew,
+                target_phone: document.getElementById('evtTargetPhone').value,
+                msg_template: document.getElementById('evtMsg').value,
+                group: document.getElementById('evtGroup').value
+            };
+
+            try {
+                if (editingEventId) {
+                    // Replace mode - delete old first
+                    await fetch(`${API_URL}/delete_event`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: editingEventId })
+                    });
+                }
+
+                await fetch(`${API_URL}/add_event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                closeModal();
+                loadEvents();
+                if (document.getElementById('receivedModal').style.display === 'flex') {
+                    loadReceived();
+                }
+                alert(editingEventId ? 'האירוע עודכן בהצלחה!' : 'האירוע נשמר בהצלחה!');
+            } catch (e) {
+                alert('שגיאה בשמירת האירוע');
+                console.error(e);
+            }
+        }
+
+        async function sendNow(phone, msg) {
+            if (confirm('לשלוח את ההודעה עכשיו?')) {
+                await fetch(`${API_URL}/send_now`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, msg })
+                });
+                alert('ההודעה נשלחה!');
+            }
+        }
+        async function sendEventNow() {
+            const phone = document.getElementById('evtTargetPhone').value;
+            const msg = document.getElementById('evtMsg').value;
+
+            if (!phone) return alert('חובה להזין מספר טלפון לשליחה מיידית');
+            if (!msg) return alert('חובה להזין תוכן הודעה');
+
+            if (confirm(`לשלוח עכשיו ל-${phone}?`)) {
+                await fetch(`${API_URL}/send_now`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, msg })
+                });
+                alert('ההודעה נשלחה בהצלחה!');
+                closeModal();
+            }
+        }
+
+        async function loadReceived() {
+            try {
+                // Fetch Groups AND Events
+                const [resGroups, resEvents] = await Promise.all([
+                    fetch(`${API_URL}/groups`),
+                    fetch(`${API_URL}/events`)
+                ]);
+                const groups = await resGroups.json();
+                const events = await resEvents.json();
+                window.allEventsData = events; // Store for editing
+
+                const list = document.getElementById('receivedListBody');
+                list.innerHTML = '';
+
+                let count = 0;
+
+                // 1. Group Members
+                groups.forEach(g => {
+                    if (!g.members) return;
+                    g.members.forEach(m => {
+                        count++;
+                        appendRow(list, m.name, m.phone, `קבוצה: ${g.name}`, g.id, true);
+                    });
+                });
+
+                // 2. Event Owners
+                events.forEach(e => {
+                    count++;
+                    const phone = e.owner_phone || e.target_phone || '';
+                    const desc = e.date_type === 'hebrew' ? e.hebrew_date : e.gregorian_date;
+                    appendRow(list, e.owner, phone, `אירוע: ${desc}`, e.id, false);
+                });
+
+                if (count === 0) list.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">אין נתונים</td></tr>';
+
+                // Add event listeners for edit buttons
+                document.querySelectorAll('.edit-received-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const rowId = this.getAttribute('data-row-id');
+                        const data = window.receivedMembersData[rowId];
+                        if (data) {
+                            editReceivedMember(data.groupId, data.phone, data.name);
+                        }
+                    });
+                });
+
+            } catch (e) { console.error(e); }
+        }
+
+        function appendRow(container, name, phone, source, id, isGroup) {
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #1e293b';
+            row.setAttribute('data-row-id', `row-${isGroup ? 'g' : 'e'}-${id}-${phone}`);
+
+            // Action buttons
+            let buttons = '';
+            if (isGroup) {
+                // Store data in a global map to avoid escaping issues
+                const rowId = `g-${id}-${phone}`;
+                window.receivedMembersData = window.receivedMembersData || {};
+                window.receivedMembersData[rowId] = { groupId: id, phone: phone, name: name };
+
+                buttons = `
+                    <button class="edit-received-btn" data-row-id="${rowId}" style="background:#fbbf24; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:5px;">✏️</button>
+                    <button onclick="deleteMember(${id}, '${phone}')" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">🗑️</button>
+                `;
+            } else {
+                buttons = `
+                    <button onclick="editEvent(${id})" style="background:#fbbf24; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:5px;">✏️</button>
+                    <button onclick="deleteEventRef(${id})" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">🗑️</button>
+                `;
+            }
+
+            row.innerHTML = `
+                <td style="padding:10px;">${name}</td>
+                <td style="padding:10px;">${phone}</td>
+                <td style="padding:10px; font-size:0.9em; color:#94a3b8;">${source}</td>
+                <td style="padding:10px;">${buttons}</td>
+            `;
+            container.appendChild(row);
+        }
+
+        async function deleteEventRef(id) {
+            if (!confirm('למחוק אירוע זה?')) return;
+            await fetch(`${API_URL}/delete_event`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            });
+            loadReceived(); // Refresh this list
+            loadEvents(); // Refresh main list
+        }
+
+        async function deleteMember(groupId, phone) {
+            if (!confirm('האם למחוק איש קשר זה מהקבוצה?')) return;
+            try {
+                await fetch(`${API_URL}/groups/delete_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, phone: phone })
+                });
+
+                // Refresh groups display if modal is open
+                if (document.getElementById('groupsModal').style.display === 'flex') {
+                    await loadGroupsDisplay();
+                    // Re-open the group that was just edited
+                    setTimeout(() => {
+                        const view = document.getElementById(`members-${groupId}`);
+                        if (view) view.style.display = 'block';
+                    }, 100);
+                }
+
+                // Refresh received list if that modal is open
+                if (document.getElementById('receivedModal').style.display === 'flex') {
+                    loadReceived();
+                }
+            } catch (e) {
+                alert('שגיאה במחיקה');
+                console.error(e);
+            }
+        }
+
+        // Edit member from received list
+        async function editReceivedMember(groupId, oldPhone, oldName) {
+            const newName = prompt('שם חדש:', oldName);
+            if (newName === null) return; // User cancelled
+
+            const newPhone = prompt('טלפון חדש:', oldPhone);
+            if (newPhone === null) return; // User cancelled
+
+            // Check if anything changed
+            if (newName.trim() === oldName && newPhone.trim() === oldPhone) {
+                return; // Nothing changed
+            }
+
+            // Update member
+            await updateMember(groupId, oldPhone, newName.trim() || oldName, newPhone.trim() || oldPhone);
+        }
+
+        async function updateMember(groupId, oldPhone, newName, newPhone) {
+            try {
+                // Delete old
+                await fetch(`${API_URL}/groups/delete_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, phone: oldPhone })
+                });
+
+                // Add new
+                await fetch(`${API_URL}/groups/add_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, name: newName, phone: newPhone })
+                });
+
+                loadReceived();
+            } catch (e) {
+                alert('שגיאה בעדכון');
+                console.error(e);
+            }
+        }
+
+        let editingEventId = null;
+
+        // Edit event - opens the main modal with event data
+        async function editEvent(eventId) {
+            const event = (window.allEventsData || []).find(e => e.id == eventId);
+            if (!event) return;
+
+            editingEventId = eventId;
+            openModal('event');
+            document.getElementById('modalTitle').innerText = "עריכת אירוע";
+
+            document.getElementById('evtName').value = event.owner || "";
+            document.getElementById('evtOwnerPhone').value = event.owner_phone || event.target_phone || "";
+            document.getElementById('evtMsg').value = event.message || "מזל טוב! 🎉";
+
+            if (event.date_type === 'hebrew') {
+                document.querySelector('input[name="dateType"][value="hebrew"]').checked = true;
+                toggleDateInputs();
+
+                // Parse hebrew_date (e.g., "י שבט")
+                const parts = (event.hebrew_date || "").split(' ');
+                if (parts.length >= 2) {
+                    document.getElementById('hebrewDay').value = parts[0];
+                    document.getElementById('hebrewMonth').value = parts[1];
+                }
+            } else {
+                document.querySelector('input[name="dateType"][value="gregorian"]').checked = true;
+                toggleDateInputs();
+
+                // Format: YYYY-MM-DD
+                if (event.gregorian_date) {
+                    const dateParts = event.gregorian_date.split('/');
+                    if (dateParts.length === 3) {
+                        // Convert MM/DD/YYYY to YYYY-MM-DD for date input
+                        const formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+                        document.getElementById('evtDateG').value = formattedDate;
+                    }
+                }
+            }
+        }
+
+        function openReceivedModal() {
+            document.getElementById('receivedModal').style.display = 'flex';
+            loadReceived();
+        }
+
+        async function openBroadcastModal() {
+            const modal = document.getElementById('broadcastModal');
+            const select = document.getElementById('broadcastGroupSelect');
+
+            // Re-populate group list
+            try {
+                const res = await fetch(`${API_URL}/groups`);
+                const groups = await res.json();
+
+                // Keep the 'all' option
+                select.innerHTML = '<option value="all">כל הרשומים (כולם)</option>';
+                groups.forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g.id;
+                    opt.innerText = g.name;
+                    select.appendChild(opt);
+                });
+            } catch (e) { console.error('Error loading groups for broadcast', e); }
+
+            modal.style.display = 'flex';
+        }
+
+        async function sendBroadcast() {
+            const groupId = document.getElementById('broadcastGroupSelect').value;
+            const message = document.getElementById('broadcastMsgText').value.trim();
+            const date = document.getElementById('broadcastDate').value;
+            const time = document.getElementById('broadcastTime').value;
+            const btn = document.getElementById('broadcastBtn');
+
+            if (!message) return alert('חובה להזין תוכן הודעה');
+
+            const isScheduled = date && time;
+            const groupName = document.getElementById('broadcastGroupSelect').options[document.getElementById('broadcastGroupSelect').selectedIndex].text;
+
+            if (isScheduled) {
+                if (!confirm(`לתזמן הודעה ל"${groupName}" בתאריך ${date} בשעה ${time}?`)) return;
+            } else {
+                if (!confirm(`האם אתה בטוח שברצונך לשלוח הודעה מיידית לכל המנויים ב"${groupName}"?`)) return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = isScheduled ? 'מתזמן...' : 'שולח...';
+
+            try {
+                const endpoint = isScheduled ? '/api/add_event' : '/api/broadcast_group';
+                const payload = isScheduled ? {
+                    type: 'scheduled_broadcast',
+                    owner: `שידור: ${groupName}`,
+                    target_phone: groupId, // Using target_phone to store groupId for scheduled broadcasts
+                    msg_template: message,
+                    date_type: 'gregorian',
+                    gregorian_date: date,
+                    scheduled_time: time
+                } : {
+                    group_id: groupId,
+                    message: message
+                };
+
+                const res = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.status === 'started' || data.status === 'ok') {
+                    alert(isScheduled ? 'ההודעה תוזמנה בהצלחה!' : `השידור התחיל! נשלח ל-${data.target_count} אנשי קשר ברקע.`);
+                    document.getElementById('broadcastModal').style.display = 'none';
+                    document.getElementById('broadcastMsgText').value = '';
+                    document.getElementById('broadcastDate').value = '';
+                    document.getElementById('broadcastTime').value = '';
+                    loadEvents();
+                } else {
+                    alert('שגיאה: ' + (data.message || 'פעולה נכשלה'));
+                }
+            } catch (e) {
+                alert('תקלה בתקשורת עם השרת');
+                console.error(e);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '🚀 שלח/תזמן שידור';
+            }
+        }
+
+        // Backward compatibility if needed
+        async function runBroadcastTest() {
+            openBroadcastModal();
+        }
+
+        async function openResponseModal() {
+            const modal = document.getElementById('responseModal');
+            try {
+                const res = await fetch(`${API_URL}/bot_response`);
+                const data = await res.json();
+                document.getElementById('botResponseText').value = data.response || "";
+                document.getElementById('geminiApiKey').value = data.gemini_api_key || "";
+            } catch (e) { console.error('Error loading bot response', e); }
+            modal.style.display = 'flex';
+        }
+
+        function addEmoji(emoji) {
+            const txt = document.getElementById('botResponseText');
+            txt.value += emoji;
+            txt.focus();
+        }
+
+        async function saveBotResponse() {
+            const text = document.getElementById('botResponseText').value.trim();
+            const apiKey = document.getElementById('geminiApiKey').value.trim();
+            if (!text) return alert('חובה להזין תוכן לתגובה');
+
+            try {
+                const res = await fetch(`${API_URL}/bot_response`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        response: text,
+                        gemini_api_key: apiKey
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    alert('הגדרות עודכנו בהצלחה!');
+                    document.getElementById('responseModal').style.display = 'none';
+                }
+            } catch (e) { alert('שגיאה בשמירה'); }
+        }
+    </script>
+</body>
+
+</html>

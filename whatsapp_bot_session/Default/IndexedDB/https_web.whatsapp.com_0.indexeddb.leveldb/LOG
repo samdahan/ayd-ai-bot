@@ -1,5 +1,0 @@
-2026/01/28-16:59:07.776 3da4 Creating DB c:\Users\USER\.gemini\antigravity\scratch\whatsapp_server\whatsapp_bot_session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
-2026/01/28-16:59:07.782 3da4 Reusing MANIFEST c:\Users\USER\.gemini\antigravity\scratch\whatsapp_server\whatsapp_bot_session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/01/28-16:59:07.782 3da4 Recovering log #63
-2026/01/28-16:59:07.782 3da4 Reusing old log c:\Users\USER\.gemini\antigravity\scratch\whatsapp_server\whatsapp_bot_session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000063.log 
-2026/01/28-16:59:07.783 3da4 Delete type=2 #65

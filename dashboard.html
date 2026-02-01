@@ -1,0 +1,3032 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/180/a78bfa/ffffff?text=SYD">
+
+    <!-- Version: 3.0 - Mobile Optimized -->
+    <title>SYD-AI | Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <style>
+        :root {
+            --primary: #a78bfa;
+            /* Purple */
+            --secondary: #fbbf24;
+            /* Gold */
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --border: #334155;
+            --accent: #10b981;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Heebo', sans-serif;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        /* --- LOGO STYLING --- */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            /* Try to load png, then jpg, then placeholder */
+            background-image: url('logo.png'), url('logo.jpg'), url('https://via.placeholder.com/180/a78bfa/ffffff?text=SYD-AI');
+            background-size: cover;
+            background-position: center;
+            /* Glow effects */
+            box-shadow: 0 0 30px rgba(167, 139, 250, 0.2);
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            position: relative;
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(90deg, #1e293b, #0f172a);
+            border-top: 1px solid var(--primary);
+            border-bottom: 1px solid var(--primary);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        /* --- CARDS GRID (2x2) --- */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            /* Wider minmax -> 2 per row */
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 96, 0.1);
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            margin: 10px 0 5px 0;
+            color: #fbbf24;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #94a3b8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #22c55e;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        /* --- TABS --- */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(167, 139, 250, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-window {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            text-align: right;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--secondary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* --- LISTS --- */
+        .section-title {
+            max-width: 800px;
+            margin: 0 auto 15px auto;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .events-list {
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .event-row {
+            background: #1e293b;
+            border-right: 4px solid #fbbf24;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .event-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .event-date {
+            background: #0f172a;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #00f260;
+            font-family: monospace;
+        }
+
+        .send-btn {
+            background: #fbbf24;
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .send-btn:hover {
+            background: #f59e0b;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Category Buttons */
+        .cat-btn {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            color: #94a3b8;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .cat-btn.active {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .action-card-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        .action-card-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- PRINT STYLES --- */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #invoicePrintModal,
+            #invoicePrintModal * {
+                visibility: visible;
+            }
+
+            #invoicePrintModal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: white !important;
+                color: black !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            .modal-content {
+                border: none !important;
+                box-shadow: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <!-- Tries to load logo.png, falls back to existing ai_icon.ico -->
+        <img src="logo.png" onerror="this.src='ai_icon.ico'" class="logo-container" alt="DOBISAM Logo"
+            style="object-fit: contain; background: transparent; border: none; box-shadow: none;">
+
+        <h1>SYD-AI</h1>
+        <div class="subtitle">הסוכן החכם של SAM DAHAN</div>
+    </div>
+
+    <div class="welcome-banner">
+        מערכת לניהול פרויקטים SYD-AI - הכל במקום אחד.
+    </div>
+
+    <!-- TABS NAVIGATION -->
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab('tab-dashboard')"><i class="fas fa-th-large"></i>
+            כללי</button>
+        <button class="tab-btn" onclick="switchTab('tab-events')"><i class="fas fa-gift"></i> שמחות</button>
+        <button class="tab-btn" onclick="switchTab('tab-purchases')"><i class="fas fa-chart-line"></i> ניהול
+            מכירות</button>
+        <button class="tab-btn" onclick="switchTab('tab-users')"><i class="fas fa-users"></i> לקוחות</button>
+    </div>
+
+    <!-- TAB: DASHBOARD -->
+    <div id="tab-dashboard" class="tab-content active">
+        <div class="cards-container">
+            <!-- Status Card -->
+            <div class="card">
+                <div class="status-badge" id="statusText">
+                    <i class="fas fa-check"></i> בבדיקה...
+                </div>
+                <h3 id="statusPhone">--</h3>
+                <p>מערכת פעילה ומחוברת</p>
+            </div>
+
+            <!-- AI Monitoring -->
+            <div class="card" onclick="switchTab('tab-users')">
+                <div class="card-icon" style="color: #6ee7b7;">📈</div>
+                <h3>מרכז נתונים</h3>
+                <p>צפייה בכל אנשי הקשר והפעילות</p>
+            </div>
+
+            <!-- Settings -->
+            <div class="card" onclick="openResponseModal()">
+                <div class="card-icon" style="color: #94a3b8;">⚙️</div>
+                <h3>הגדרות בוט</h3>
+                <p>ניהול מפתח API ותשובות</p>
+            </div>
+
+            <!-- Refresh -->
+            <div class="card" onclick="location.reload()">
+                <div class="card-icon" style="color: #ffffff;">🔄</div>
+                <h3>רענון</h3>
+                <p>עדכון תצוגה</p>
+            </div>
+        </div>
+
+        <!-- System Cards (Quick Actions) -->
+        <div class="cards-container" style="margin-top: 20px;">
+            <!-- Quick Add Product (Scanner) -->
+            <div class="card" onclick="startScanner('newProdBarcode')"
+                style="border-color: #10b981; background: rgba(16, 185, 129, 0.05);">
+                <div class="card-icon" style="color: #10b981;">📸</div>
+                <h3>הוספת מוצר מהירה</h3>
+                <p>סריקת ברקוד והוספה מיידית למדף</p>
+                <div
+                    style="position:absolute; top:10px; right:10px; background:#10b981; color:white; font-size:0.7em; padding:2px 8px; border-radius:10px;">
+                    חדש! ✨</div>
+            </div>
+
+            <!-- Broadcast Message -->
+            <div class="card" onclick="openBroadcastModal()">
+                <div class="card-icon" style="color: #ef4444;">📢</div>
+                <h3>שידור הודעה לקבוצה</h3>
+                <p>שליחת הודעה מיידית לקבוצה נבחרת</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: EVENTS (SHMACHOT) -->
+    <div id="tab-events" class="tab-content">
+        <div class="project-window">
+            <div class="section-title">
+                <h2>📅 פרויקט: ניהול שמחות</h2>
+                <div style="display:flex; gap:10px;">
+                    <button class="send-btn" onclick="openModal('event', currentCategory)"><i class="fas fa-plus"></i>
+                        הוסף שמחה</button>
+                </div>
+            </div>
+
+            <!-- Category Navigation -->
+            <div class="category-tabs"
+                style="display:flex; gap:10px; margin-bottom: 25px; background: #0f172a; padding: 10px; border-radius: 12px; overflow-x: auto;">
+                <button class="cat-btn active" onclick="loadEventsByCategory('Upcoming', this)">📅 קרובות</button>
+                <button class="cat-btn" onclick="loadEventsByCategory('משפחה', this)">👨‍👩‍👧‍👦 משפחה</button>
+                <button class="cat-btn" onclick="loadEventsByCategory('קרובים', this)">🤝 קרובים</button>
+                <button class="cat-btn" onclick="loadEventsByCategory('עובדים', this)">💼 עובדים</button>
+                <button class="cat-btn" onclick="loadEventsByCategory('שונות', this)">✨ שונות</button>
+            </div>
+
+            <div class="events-list" id="eventsListMain">
+                <!-- Data will be loaded here filtered by category -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: SALES MANAGEMENT -->
+    <div id="tab-purchases" class="tab-content">
+        <div class="project-window">
+            <div class="section-title">
+                <h2>🏬 ניהול חנויות דיגיטליות</h2>
+            </div>
+            <p>הקליקו על חלון פנוי להקמת חלון חנות חדש. הקליקו על חנות קיימת לניהול מוצרים ולקוחות.</p>
+
+            <div id="storesGrid" class="cards-container"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin-top:20px;">
+                <!-- 6 Store Windows will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: USERS/CLIENTS -->
+    <div id="tab-users" class="tab-content">
+        <div class="project-window">
+            <div class="section-title">
+                <h2>👥 ניהול לקוחות ונרשמים</h2>
+            </div>
+            <table id="receivedTable">
+                <thead>
+                    <tr>
+                        <th>שם</th>
+                        <th>טלפון</th>
+                        <th>תאריך רישום</th>
+                        <th>פעולות</th>
+                    </tr>
+                </thead>
+                <tbody id="receivedBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- BOT RESPONSE MODAL -->
+    <div id="responseModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('responseModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; margin-bottom:20px; color:#fbbf24;">🤖 הגדרת תשובת הבוט</h2>
+
+            <div class="form-group">
+                <label>נוסח התגובה האוטומטית (כשאין תשובה חכמה)</label>
+                <textarea id="botResponseText" class="form-control" rows="4"
+                    placeholder="תודה רבה! בשמי ובשם הצוות 🙏"></textarea>
+            </div>
+
+            <div class="form-group" style="margin-top:20px; border-top: 1px solid #334155; padding-top: 20px;">
+                <label style="color: #60a5fa; display: flex; align-items: center; justify-content: space-between;">
+                    🔑 מפתח Gemini API (מפעיל בינה מלאכותית)
+                    <div style="display: flex; align-items: center; gap: 10px; font-size: 0.8em; color: white;">
+                        <span>הפעלת פקודות:</span>
+                        <input type="checkbox" id="enableCommands" style="width: 20px; height: 20px; cursor: pointer;">
+                    </div>
+                </label>
+                <input type="password" id="geminiApiKey" class="form-control" placeholder="הכנס מפתח API כאן...">
+            </div>
+
+            <div class="form-group" style="margin-top:15px;">
+                <label style="color: #60a5fa;">🧠 פקודות מערכת / הנחיות לבינה המלאכותית</label>
+                <textarea id="systemInstruction" class="form-control" rows="3"
+                    placeholder="למשל: 'תמיד תענה בנימה עסקית ותנסה לעזור למכור תכשיטים'"></textarea>
+                <p style="font-size: 0.75em; color: #94a3b8; margin-top: 5px;">* כאן תוכל לתת לבוט 'פקודות על' שיקבעו
+                    איך הוא יתנהג עם לקוחות.</p>
+            </div>
+
+            <!-- AI Tester Section -->
+            <div id="aiTesterSection"
+                style="margin-top:20px; background: #0f172a; padding: 15px; border-radius: 12px; border: 1px solid #334155;">
+                <label style="color: #a78bfa; font-weight: bold; margin-bottom: 10px; display: block;">🧪 צ'אט בדיקה
+                    (נסה את הפקודות שלך)</label>
+                <div id="aiTestResult"
+                    style="min-height: 40px; color: #cbd5e1; font-size: 0.9em; margin-bottom: 10px; padding: 10px; background: #1e293b; border-radius: 8px;">
+                    הקלד הודעה ובדוק איך הבוט עונה לפי ההנחיות החדשות...
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="aiTestInput" class="form-control" placeholder="כתוב משהו לבוט..."
+                        style="margin-bottom:0;">
+                    <button class="submit-btn" onclick="runAiTest()"
+                        style="margin:0; width: auto; padding: 0 20px;">בדיקה 🚀</button>
+                </div>
+            </div>
+
+            <!-- Emoji Picker -->
+            <div
+                style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; background: #0f172a; padding: 10px; border-radius: 10px;">
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🙏')">🙏</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('😊')">😊</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🌹')">🌹</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('✨')">✨</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🤖')">🤖</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('💎')">💎</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('❤️')">❤️</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('✅')">✅</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🚀')">🚀</span>
+                <span style="cursor:pointer; font-size: 1.2em;" onclick="addEmoji('🎉')">🎉</span>
+            </div>
+
+            <button class="submit-btn" onclick="saveBotResponse()">💾 שמור הגדרות</button>
+        </div>
+    </div>
+
+    <!-- BROADCAST MODAL -->
+    <div id="broadcastModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('broadcastModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; margin-bottom:20px; color:#ef4444;">📢 שידור הודעה לקבוצה</h2>
+
+            <div class="form-group">
+                <label>בחר קבוצת יעד</label>
+                <select id="broadcastGroupSelect" class="form-control">
+                    <option value="all">כל הרשומים (כולם)</option>
+                    <!-- Groups populated by JS -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>תוכן ההודעה</label>
+                <textarea id="broadcastMsgText" class="form-control" rows="4"
+                    placeholder="כתוב את ההודעה כאן..."></textarea>
+            </div>
+
+            <div
+                style="background: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #334155;">
+                <label style="color: #fbbf24; font-weight: bold; display: block; margin-bottom: 10px;">📅 תזמון שליחה
+                    (אופציונלי)</label>
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.8em; color: #94a3b8;">תאריך</label>
+                        <input type="date" id="broadcastDate" class="form-control">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.8em; color: #94a3b8;">שעה</label>
+                        <input type="time" id="broadcastTime" class="form-control">
+                    </div>
+                </div>
+                <p style="font-size: 0.75em; color: #94a3b8; margin-top: 5px;">* השאר ריק לשליחה מיידית</p>
+            </div>
+
+            <button class="submit-btn" style="background: #ef4444;" id="broadcastBtn" onclick="sendBroadcast()">🚀
+                שלח/תזמן שידור</button>
+        </div>
+    </div>
+
+    <!-- CREATE STORE MODAL -->
+    <div id="createStoreModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('createStoreModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; color:var(--primary);">🏪 הקמת חנות דיגיטלית חדשה</h2>
+            <div class="form-group">
+                <label>🏷️ שם העסק / חנות</label>
+                <input type="text" id="newStoreName" class="form-control" placeholder="למשל: משה כובעים">
+            </div>
+            <div class="form-group">
+                <label>📞 טלפון בעל העסק</label>
+                <input type="text" id="newStorePhone" class="form-control" placeholder="050...">
+            </div>
+            <div class="form-group">
+                <label>🖼️ קישור לתמונת חנות (לוגו/רקע)</label>
+                <input type="text" id="newStoreImage" class="form-control" placeholder="https://example.com/image.jpg">
+            </div>
+            <button class="submit-btn" onclick="createNewStore()">🚀 הקם חנות</button>
+        </div>
+    </div>
+
+    <!-- MANAGE STORE MODAL -->
+    <div id="manageStoreModal" class="modal" style="z-index: 2000;">
+        <div class="modal-content"
+            style="max-width: 900px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
+            <span class="close-btn"
+                onclick="document.getElementById('manageStoreModal').style.display='none'">&times;</span>
+            <div id="manageStoreHeader"
+                style="text-align: center; margin-bottom: 15px; border-bottom: 2px solid var(--primary); padding-bottom: 10px;">
+                <!-- Header content -->
+            </div>
+
+            <!-- Store Tab Navigation -->
+            <div class="category-tabs"
+                style="display:flex; gap:5px; margin-bottom: 20px; background: #0f172a; padding: 8px; border-radius: 15px; overflow-x: auto; border: 1px solid #334155;">
+                <button class="cat-btn active store-tab-btn" onclick="switchStoreTab('store-tab-products', this)"
+                    style="flex:1; white-space:nowrap; padding: 10px;"><i class="fas fa-box"></i> מוצרים</button>
+                <button class="cat-btn store-tab-btn" onclick="switchStoreTab('store-tab-clients', this)"
+                    style="flex:1; white-space:nowrap; padding: 10px;"><i class="fas fa-users"></i> לקוחות</button>
+                <button class="cat-btn store-tab-btn" onclick="switchStoreTab('store-tab-invoices', this)"
+                    style="flex:1; white-space:nowrap; padding: 10px;"><i class="fas fa-file-invoice"></i>
+                    חשבוניות</button>
+                <button class="cat-btn store-tab-btn" onclick="switchStoreTab('store-tab-logs', this)"
+                    style="flex:1; white-space:nowrap; padding: 10px;"><i class="fas fa-history"></i> יומן</button>
+            </div>
+
+            <!-- TAB 1: PRODUCTS -->
+            <div id="store-tab-products" class="store-tab-content active"
+                style="display: flex; flex-direction: column; gap:15px; overflow-y: auto;">
+                <div style="background: #0f172a; padding: 20px; border-radius: 15px; border: 1px solid #334155;">
+                    <h3 style="color: var(--secondary); margin-top: 0; text-align: center;">➕ הוספת מוצר חדש</h3>
+                    <div id="productActionSelector" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button onclick="startScanner('newProdBarcode')" class="action-card-btn"
+                            style="background: #3b82f6;">📷 סרוק</button>
+                        <button onclick="showManualInput()" class="action-card-btn"
+                            style="background: #1e293b; border: 1px solid #475569;">⌨️ הקלד</button>
+                        <button onclick="document.getElementById('productFileInput').click()" class="action-card-btn"
+                            style="background: #6366f1;">📁 קובץ</button>
+                        <input type="file" id="productFileInput" accept="image/*" style="display:none;"
+                            onchange="handleProductFile(this)">
+                    </div>
+
+                    <div id="productDataArea"
+                        style="display: none; background: #1e293b; padding: 15px; border-radius: 10px; border: 1px dashed #4b5563;">
+                        <input type="hidden" id="hiddenImageBase64">
+                        <div class="form-group"><label>🔢 ברקוד</label><input type="text" id="newProdBarcode"
+                                class="form-control"></div>
+                        <div style="display: flex; gap: 10px; align-items: flex-end; margin-bottom: 15px;">
+                            <div style="flex: 1;"><label style="color: #fbbf24;">🏷️ שם המוצר</label><input type="text"
+                                    id="newProdName" class="form-control" style="margin: 0;"></div>
+                            <button onclick="identifyCurrentProduct()"
+                                style="background: #a78bfa; border: none; padding: 12px; border-radius: 8px; cursor: pointer;">🤖</button>
+                        </div>
+                        <div id="saveProductArea"
+                            style="display: none; border-top: 1px solid #334155; padding-top: 15px;">
+                            <div class="form-group"><label>💰 מחיר (₪)</label><input type="number" id="newProdPrice"
+                                    class="form-control"></div>
+                            <button class="submit-btn" style="background: #10b981; margin-top: 10px;"
+                                onclick="addStoreProduct()">💾 שמור למדף</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: #0f172a; padding: 15px; border-radius: 10px; border: 1px solid #334155;">
+                    <h3 style="color: #60a5fa;">🛒 מדף המוצרים</h3>
+                    <ul id="storeProductsList" style="list-style: none; padding: 0;"></ul>
+                </div>
+            </div>
+
+            <!-- TAB 2: CLIENTS -->
+            <div id="store-tab-clients" class="store-tab-content"
+                style="display: none; flex-direction: column; gap:15px; overflow-y: auto;">
+                <div style="background: #0f172a; padding: 20px; border-radius: 15px; border: 1px solid #334155;">
+                    <h3 style="color: #a78bfa; margin-top:0;">👥 הוספת לקוח מתעניינ/ת</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <input type="text" id="newClientName" class="form-control" placeholder="שם הלקוח"
+                            style="margin:0;">
+                        <input type="text" id="newClientPhone" class="form-control" placeholder="טלפון"
+                            style="margin:0;">
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <input type="text" id="newClientProduct" class="form-control" placeholder="מתעניין במוצר..."
+                            style="margin:0;">
+                        <input type="text" id="newClientNotes" class="form-control" placeholder="הערות..."
+                            style="margin:0;">
+                    </div>
+                    <button class="submit-btn" style="width:100%;" onclick="addStoreClient()">➕ הוסף לרשימה</button>
+                </div>
+                <div style="background: #0f172a; padding: 15px; border-radius: 10px; border: 1px solid #334155;">
+                    <h3 style="color: #60a5fa;">📊 לקוחות שנרשמו</h3>
+                    <ul id="storeClientsList" style="list-style: none; padding: 0;"></ul>
+                </div>
+            </div>
+
+            <!-- TAB 3: INVOICES -->
+            <div id="store-tab-invoices" class="store-tab-content"
+                style="display: none; flex-direction: column; gap:15px; overflow-y: auto;">
+                <div style="background: #0f172a; padding: 20px; border-radius: 15px; border: 1px solid #334155;">
+                    <h3 style="color: #10b981; margin-top:0;">🧾 הנפקת חשבונית חדשה</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <input type="text" id="invoiceClientName" class="form-control" placeholder="שם הלקוח"
+                            style="margin:0;">
+                        <input type="number" id="invoiceAmount" class="form-control" placeholder="סכום כולל (₪)"
+                            style="margin:0;">
+                    </div>
+                    <textarea id="invoiceItems" class="form-control" rows="2" placeholder="פירוט מוצרים..."
+                        style="margin-bottom:10px;"></textarea>
+                    <button class="submit-btn" style="width:100%; background:#10b981;" onclick="createStoreInvoice()">📄
+                        צור חשבונית</button>
+                </div>
+                <div style="background: #0f172a; padding: 15px; border-radius: 10px; border: 1px solid #334155;">
+                    <h3 style="color: #60a5fa;">📋 היסטוריית חשבוניות</h3>
+                    <ul id="storeInvoicesList" style="list-style: none; padding: 0;"></ul>
+                </div>
+            </div>
+
+            <!-- TAB 4: LOGS -->
+            <div id="store-tab-logs" class="store-tab-content"
+                style="display: none; flex-direction: column; gap:15px; overflow-y: auto;">
+                <div style="background: #0f172a; padding: 15px; border-radius: 15px; border: 1px solid #334155;">
+                    <h3 style="color: #f59e0b; margin-top:0;">📜 יומן פעולות החנות</h3>
+                    <div id="storeLogsContainer"
+                        style="font-family: monospace; font-size: 0.85em; color: #cbd5e1; display:flex; flex-direction:column; gap:8px;">
+                        <!-- Logs will load here -->
+                    </div>
+                    <button class="submit-btn" style="margin-top:20px; background:#475569;" onclick="loadStoreLogs()">🔄
+                        רענן יומן</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- INVOICE PRINT MODAL -->
+    <div id="invoicePrintModal" class="modal" style="z-index: 3000; background: rgba(0,0,0,0.95);">
+        <div class="modal-content"
+            style="max-width: 400px; background: white; color: black; border: none; padding: 40px; font-family: 'Heebo', sans-serif;">
+            <span class="close-btn no-print"
+                onclick="document.getElementById('invoicePrintModal').style.display='none'">&times;</span>
+
+            <div style="text-align: center; border-bottom: 2px dashed #000; padding-bottom: 15px; margin-bottom: 15px;">
+                <h2 style="margin:0; font-weight: 900; color: #000;">SYD-AI STORE</h2>
+                <div id="printStoreName" style="font-weight: bold; font-size: 1.2em; color: #000;"></div>
+                <div id="printStorePhone" style="color: #444;"></div>
+            </div>
+
+            <div style="margin-bottom: 20px; color: #000;">
+                <div style="display:flex; justify-content: space-between;">
+                    <span>תאריך:</span>
+                    <span id="printDate"></span>
+                </div>
+                <div style="display:flex; justify-content: space-between;">
+                    <span>לקוח:</span>
+                    <span id="printClient" style="font-weight: bold;"></span>
+                </div>
+                <div style="display:flex; justify-content: space-between;">
+                    <span>מס' חשבונית:</span>
+                    <span id="printId"></span>
+                </div>
+            </div>
+
+            <div
+                style="border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 10px; font-weight: bold; color: #000;">
+                פירוט רכישה:</div>
+            <div id="printItems"
+                style="min-height: 100px; line-height: 1.5; white-space: pre-wrap; color: #333; font-size: 0.95em;">
+            </div>
+
+            <div style="border-top: 2px dashed #000; padding-top: 15px; margin-top: 20px; text-align: center;">
+                <div style="font-size: 1.5em; font-weight: 900; color: #000;">סה"כ לתשלום: <span
+                        id="printAmount"></span>₪</div>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center; font-size: 0.8em; opacity: 0.7; color: #000;">
+                תודה שקניתם אצלנו! 🙏<br>
+                SYD-AI Smart Business Solutions
+            </div>
+
+            <div class="no-print" style="margin-top: 30px; display: flex; gap: 10px;">
+                <button onclick="window.print()" class="submit-btn"
+                    style="background: #1e293b; color: white; flex: 1; min-width: 0;">🖨️ הדפס</button>
+                <button id="shareInvoiceBtn" class="submit-btn"
+                    style="background: #25d366; color: white; flex: 1; min-width: 0;">📱 שתף</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- EDIT PRODUCT MODAL -->
+    <div id="editProductModal" class="modal" style="z-index: 2100;">
+        <div class="modal-content" style="border: 1px solid var(--secondary);">
+            <span class="close-btn"
+                onclick="document.getElementById('editProductModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; color:var(--secondary);">✏️ עריכת מוצר</h2>
+            <input type="hidden" id="editProdId">
+            <div class="form-group">
+                <label>שם המוצר</label>
+                <input type="text" id="editProdName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>מחיר (₪)</label>
+                <input type="number" id="editProdPrice" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>קישור לתמונה</label>
+                <input type="text" id="editProdImage" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>ברקוד</label>
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="editProdBarcode" class="form-control" style="margin:0;">
+                    <button onclick="startScanner('editProdBarcode')"
+                        style="background:#3b82f6; border:none; border-radius:5px; width:40px; cursor:pointer;">📷</button>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="submit-btn" onclick="saveProductChanges()">💾 שמור שינויים</button>
+                <button class="submit-btn" style="background:#ef4444;" onclick="deleteProduct()">🗑️ מחק מוצר</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCANNER MODAL -->
+    <div id="scannerModal" class="modal" style="z-index: 2200;">
+        <div class="modal-content" style="text-align:center; background:#1e293b; color: white; max-width: 400px;">
+            <span class="close-btn" onclick="stopScanner()"
+                style="color: #ef4444; font-size: 2em; top: 10px; left: 10px;">&times;</span>
+            <h3 style="color:var(--secondary); margin-top: 10px;">סריקת ברקוד 📷</h3>
+
+            <!-- Camera View -->
+            <div id="reader-container">
+                <div id="reader"
+                    style="width: 100%; max-width: 350px; min-height: 250px; margin: 0 auto; border-radius: 10px; overflow: hidden; background: #000;">
+                </div>
+
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                    <button onclick="captureSnapshot()"
+                        style="background: #10b981; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.2em; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+                        📸 צלם ושמור (Snapshot)
+                    </button>
+
+                    <p style="color: #94a3b8; font-size: 0.85em; margin: 5px 0;">מזהה ברקוד בשידור חי? לחץ לצילום וזיהוי
+                        מיידי</p>
+                </div>
+
+                <div style="margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px;">
+                    <p style="margin-bottom: 10px;">או העלה תמונה של ברקוד:</p>
+                    <input type="file" id="barcodeFile" accept="image/*" style="display: none;"
+                        onchange="scanBarcodeFile(this)">
+                    <button onclick="document.getElementById('barcodeFile').click()" class="submit-btn"
+                        style="background: #3b82f6; width: auto; padding: 10px 20px; font-size: 0.9em;">📁 בחר
+                        קובץ</button>
+                </div>
+            </div>
+
+            <!-- Result View (Hidden until scan success) -->
+            <div id="scanResultContainer" style="display:none; padding: 20px 0;">
+                <div
+                    style="background: #0f172a; padding: 20px; border-radius: 15px; border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(167, 139, 250, 0.3); position: relative; overflow: hidden;">
+                    <!-- Decorative background icon -->
+                    <div
+                        style="position:absolute; top:-10px; left:-10px; font-size:5em; opacity:0.05; transform:rotate(-20deg);">
+                        📦</div>
+
+                    <h4
+                        style="color: var(--primary); margin-top: 0; display:flex; align-items:center; gap:10px; justify-content:center;">
+                        <span style="font-size:1.4em;">✅</span> מוצר זוהה בהצלחה!
+                    </h4>
+
+                    <div style="margin: 20px 0; text-align:center;">
+                        <div
+                            style="width:80px; height:80px; background:#1e293b; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px auto; border: 2px dashed var(--secondary);">
+                            <span style="font-size:2.5em;">🛍️</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="text-align: right;">
+                        <label style="color: var(--secondary);">🏷️ שם המוצר (זוהה ע"י AI)</label>
+                        <input type="text" id="scannedProdName" class="form-control" placeholder="מזהה מוצר..."
+                            style="background:rgba(255,255,255,0.05); font-weight:bold; border-color:var(--primary);">
+                    </div>
+
+                    <div class="form-group" style="text-align: right;">
+                        <label style="opacity:0.7;">🔢 ברקוד</label>
+                        <input type="text" id="scannedBarcode" class="form-control" readonly
+                            style="opacity: 0.6; background:transparent; border: 1px dashed #4b5563;">
+                    </div>
+
+                    <div class="form-group" style="text-align: right; margin-top: 20px;">
+                        <label style="color: #10b981; font-weight: 900; font-size: 1.1em;">💰 קבע מחיר למכירה
+                            (₪)</label>
+                        <input type="number" id="scannedProdPrice" class="form-control" placeholder="0.00"
+                            style="font-size: 1.5em; text-align: center; border-color: #10b981; background: rgba(16, 185, 129, 0.1);">
+                    </div>
+
+                    <button class="submit-btn" onclick="confirmAndSaveScan()"
+                        style="background: #10b981; font-size: 1.2em; padding: 15px; margin-top: 10px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
+                        💾 שמור מוצר לחנות
+                    </button>
+                    <button class="submit-btn" onclick="resetScannerView()"
+                        style="background: transparent; border: 1px solid #ef4444; color: #ef4444; margin-top: 15px; font-size: 0.9em; width: auto; align-self: center;">
+                        🔄 סרוק מוצר אחר
+                    </button>
+                </div>
+            </div>
+
+            <div id="scannerInstructions" style="margin-top: 15px;">
+                <a href="https://wa.me/7103495194" target="_blank"
+                    style="color: #10b981; text-decoration: none; font-size: 0.9em; font-weight: bold;">📱 שלח תמונה
+                    לבוט בווטסאפ</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="eventsWindow" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('eventsWindow').style.display='none'">&times;</span>
+            <h2 style="text-align:center; color:#fca5a5; margin-bottom:20px;">🎉 שמחות קרובות</h2>
+            <div id="windowEventsList"
+                style="max-height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+    </div>
+
+    <!-- RECEIVED MODAL -->
+    <div id="receivedModal" class="modal">
+        <div class="modal-content" style="max-height:80vh; overflow-y:auto;">
+            <span class="close-btn"
+                onclick="document.getElementById('receivedModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; color:#6ee7b7; margin-bottom:20px;">📜 התקבל - כל הנרשמים</h2>
+
+            <table style="width:100%; border-collapse: collapse; color: white;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #334155; text-align:right;">
+                        <th style="padding:10px;">שם</th>
+                        <th style="padding:10px;">טלפון</th>
+                        <th style="padding:10px;">קבוצה</th>
+                        <th style="padding:10px;">פעולות</th>
+                    </tr>
+                </thead>
+                <tbody id="receivedListBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- MODAL (Add Event/Msg) -->
+    <div id="mainModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle" style="text-align:center; margin-bottom:20px; color:#fbbf24;">הוספת שמחה חדשה</h2>
+
+            <div class="form-group">
+                <label>סוג השמחה</label>
+                <select id="simchaTypeSelect" class="form-control" onchange="handleSimchaTypeChange()">
+                    <option value="birthday">🎂 יום הולדת</option>
+                    <option value="wedding">💍 חתונה</option>
+                    <option value="anniversary">❤️ יום נישואין</option>
+                    <option value="bar_mitzvah">📖 בר מצווה</option>
+                    <option value="bat_mitzvah">👑 בת מצווה</option>
+                    <option value="brit">👶 ברית / זבד הבת</option>
+                    <option value="custom">✨ סוג אחר (הקלדה ידנית)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="customSimchaGroup" style="display:none;">
+                <label>הכנס סוג שמחה חדש</label>
+                <input type="text" id="customSimchaType" class="form-control" placeholder="למשל: חנוכת בית"
+                    oninput="applyTemplate('modern')">
+            </div>
+
+            <div class="form-group">
+                <label>שם בעל השמחה</label>
+                <input type="text" id="evtName" class="form-control" placeholder="למשל: יוסף דהן"
+                    oninput="applyTemplate('modern')">
+            </div>
+
+            <!-- Phone (Optional for owner) -->
+            <div class="form-group" id="ownerPhoneGroup">
+                <label>טלפון של בעל השמחה (אופציונלי)</label>
+                <input type="text" id="evtOwnerPhone" class="form-control" placeholder="+972...">
+            </div>
+
+            <div class="form-group">
+                <label>סוג תאריך</label>
+                <div class="radio-group">
+                    <label style="color:white; font-weight:normal"><input type="radio" name="dateType" value="hebrew"
+                            onclick="toggleDateInputs()"> עברי</label>
+                    <label style="color:white; font-weight:normal"><input type="radio" name="dateType" value="gregorian"
+                            checked onclick="toggleDateInputs()"> לועזי</label>
+                </div>
+            </div>
+
+            <div class="form-group" id="gregorianInput">
+                <label>תאריך לועזי</label>
+                <input type="date" id="evtDateG" class="form-control">
+            </div>
+
+            <div class="form-group" id="hebrewInput" style="display:none;">
+                <label>תאריך עברי</label>
+                <div style="display:flex; gap:10px;">
+                    <select id="hebrewDay" class="form-control">
+                        <option value="">יום</option>
+                    </select>
+                    <select id="hebrewMonth" class="form-control">
+                        <option value="">חודש</option>
+                        <option value="תשרי">תשרי</option>
+                        <option value="חשוון">חשוון</option>
+                        <option value="כסלו">כסלו</option>
+                        <option value="טבת">טבת</option>
+                        <option value="שבט">שבט</option>
+                        <option value="אדר">אדר</option>
+                        <option value="אדר א">אדר א'</option>
+                        <option value="אדר ב">אדר ב'</option>
+                        <option value="ניסן">ניסן</option>
+                        <option value="אייר">אייר</option>
+                        <option value="סיוון">סיוון</option>
+                        <option value="תמוז">תמוז</option>
+                        <option value="אב">אב</option>
+                        <option value="אלול">אלול</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>הודעה שתישלח (נוצרת אוטומטית)</label>
+                <textarea id="evtMsg" class="form-control" rows="3">מזל טוב! 🎉</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>לאן לשלוח את הברכה?</label>
+                <input type="text" id="evtTargetPhone" class="form-control" placeholder="הכנס מספר...">
+                <div style="font-size:0.8em; color:#94a3b8; margin-top:3px;">ניתן להכניס מספר אחד או יותר (מופרדים
+                    בפסיק).</div>
+            </div>
+
+            <div class="form-group">
+                <label>שייך לקטגוריה (בשמחות בלבד)</label>
+                <select id="evtGroup" class="form-control">
+                    <option value="משפחה">👨‍👩‍👧‍👦 משפחה</option>
+                    <option value="קרובים">🤝 קרובים</option>
+                    <option value="עובדים">💼 עובדים</option>
+                    <option value="שונות">✨ שונות</option>
+                </select>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="submit-btn" onclick="saveEvent()" style="flex:1;">💾 שמור במערכת</button>
+                <button class="submit-btn" onclick="sendEventNow()"
+                    style="flex:1; background: linear-gradient(90deg, #f59e0b, #d97706);">🚀 שלח עכשיו</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GROUPS MODAL -->
+    <div id="groupsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('groupsModal').style.display='none'">&times;</span>
+            <h2 style="text-align:center; margin-bottom:20px; color:#a78bfa;">ניהול קבוצות תפוצה</h2>
+
+            <div style="margin-bottom:20px; border-bottom:1px solid #334155; padding-bottom:15px;">
+                <label style="color:#a78bfa; font-weight:bold;">צור קבוצה חדשה:</label>
+                <div style="display:flex; gap:10px; margin-top:5px;">
+                    <input type="text" id="newGroupName" class="form-control" placeholder="שם הקבוצה (למשל: דודים)">
+                    <button class="submit-btn" style="width:auto; margin:0; background:#a78bfa;"
+                        onclick="createGroup()">צור</button>
+                </div>
+            </div>
+
+            <h3 style="color:white; font-size:1.1em;">קבוצות קיימות:</h3>
+            <div id="groupsList"
+                style="max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+                <!-- Groups will load here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DYNAMIC API URL - Use same host for deployment
+        let API_URL = window.location.origin + "/api";
+
+        // Fallback for local files
+        if (window.location.protocol === 'file:') {
+            API_URL = "http://localhost:5000/api";
+        }
+
+        const BOT_ID = "7103495194";
+        let currentType = 'birthday';
+        let allStores = [];
+
+        window.onload = function () {
+            populateHebrewDays();
+            checkStatus();
+            loadEvents();
+
+            // Auto-refresh every 10 seconds
+            setInterval(() => {
+                loadEvents();
+                // If groups modal is open, refresh groups too? Maybe overkill, but loadEvents is good.
+                checkStatus();
+            }, 10000);
+        };
+
+        // --- GROUPS LOGIC ---
+
+        // Helper function to escape HTML special characters
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        let allGroups = [];
+
+        function openGroupsModal() {
+            document.getElementById('groupsModal').style.display = 'flex';
+            loadGroupsDisplay();
+        }
+
+        async function loadGroupsDisplay() {
+            try {
+                const res = await fetch(`${API_URL}/groups`);
+                allGroups = await res.json();
+
+                const list = document.getElementById('groupsList');
+                list.innerHTML = '';
+
+                if (allGroups.length === 0) {
+                    list.innerHTML = '<div style="color:#94a3b8; text-align:center;">אין קבוצות עדיין. צור את הראשונה!</div>';
+                    return;
+                }
+
+                allGroups.forEach(g => {
+                    const el = document.createElement('div');
+                    el.style.cssText = "padding:10px; background:#0f172a; border-radius:5px; border-right:3px solid #a78bfa; margin-bottom:5px; cursor:pointer;";
+                    el.innerHTML = `
+                        <div style="font-weight:bold;">${g.name}</div>
+                        <div style="font-size:0.8em; color:#94a3b8;">${g.members.length} חברים - לחץ לפירוט</div>
+                        <div class="members-view" id="members-${g.id}" style="display:none; margin-top:10px; border-top:1px solid #334155; padding-top:10px;">
+                            ${g.members.map((m, idx) => {
+                        // Store member data globally to avoid escaping issues
+                        const memberId = `gm-${g.id}-${idx}`;
+                        window.groupMembersData = window.groupMembersData || {};
+                        window.groupMembersData[memberId] = { groupId: g.id, idx: idx, phone: m.phone, name: m.name };
+
+                        const safeName = escapeHtml(m.name);
+                        const safePhone = escapeHtml(m.phone);
+
+                        return `
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; padding:5px; background:#1e293b; border-radius:3px;">
+                                    <div class="member-display-${memberId}" style="flex:1;">
+                                        <span><i class="fas fa-user"></i> ${safeName} (${safePhone})</span>
+                                    </div>
+                                    <div class="member-edit-${memberId}" style="display:none; flex:1; gap:5px;">
+                                        <input class="edit-name-${memberId}" value="${safeName}" style="width:100px; background:#0f172a; border:1px solid #334155; color:white; padding:3px; border-radius:3px;">
+                                        <input class="edit-phone-${memberId}" value="${safePhone}" style="width:120px; background:#0f172a; border:1px solid #334155; color:white; padding:3px; border-radius:3px;">
+                                    </div>
+                                    <div style="display:flex; gap:5px;">
+                                        <button class="edit-member-btn-${memberId}" data-member-id="${memberId}" onclick="event.stopPropagation(); toggleEditMemberNew('${memberId}')" title="ערוך" style="background:none; border:none; color:#fbbf24; cursor:pointer;">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="save-member-btn-${memberId}" data-member-id="${memberId}" onclick="event.stopPropagation(); saveEditMemberNew('${memberId}')" title="שמור" style="display:none; background:none; border:none; color:#22c55e; cursor:pointer;">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button onclick="event.stopPropagation(); deleteMember(${g.id}, '${safePhone}')" title="מחק" style="background:none; border:none; color:#ef4444; cursor:pointer;">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                    }).join('')}
+                            <div style="margin-top:10px; display:flex; gap:5px;">
+                                <input id="newName-${g.id}" placeholder="שם" style="width:80px; background:#1e293b; border:none; color:white; padding:5px;">
+                                <input id="newPhone-${g.id}" placeholder="טלפון" style="width:100px; background:#1e293b; border:none; color:white; padding:5px;">
+                                <button class="add-member-btn" data-group-id="${g.id}" style="background:#22c55e; border:none; color:white; cursor:pointer; padding:5px 10px;">+</button>
+                            </div>
+                        </div>
+                    `;
+
+                    // Add click handler for add member button
+                    el.addEventListener('click', (e) => {
+                        // Handle add member button
+                        if (e.target.classList.contains('add-member-btn')) {
+                            e.stopPropagation();
+                            const groupId = e.target.getAttribute('data-group-id');
+                            addMember(groupId, e);
+                            return;
+                        }
+
+                        // Don't toggle if clicking on inputs or other buttons
+                        if (e.target.tagName === 'INPUT') return;
+                        if (e.target.tagName === 'BUTTON' && !e.target.classList.contains('add-member-btn')) return;
+                        if (e.target.tagName === 'I') return; // Font awesome icons
+
+                        // Toggle view
+                        const view = document.getElementById(`members-${g.id}`);
+                        if (view) {
+                            view.style.display = view.style.display === 'none' ? 'block' : 'none';
+                        }
+                    });
+
+                    list.appendChild(el);
+                });
+            } catch (e) { console.error('Groups error', e); }
+        }
+
+        async function createGroup() {
+            const name = document.getElementById('newGroupName').value;
+            if (!name) return;
+
+            await fetch(`${API_URL}/groups/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+
+            document.getElementById('newGroupName').value = '';
+            loadGroupsDisplay();
+        }
+
+        async function addMember(groupId, event) {
+            event.stopPropagation(); // prevent closing accordion
+            const nameInput = document.getElementById(`newName-${groupId}`);
+            const phoneInput = document.getElementById(`newPhone-${groupId}`);
+
+            if (!nameInput || !phoneInput) {
+                alert('שגיאה: לא נמצאו שדות קלט. ID: ' + groupId);
+                console.error('Inputs not found for groupId:', groupId);
+                return;
+            }
+
+            const name = nameInput.value.trim();
+            const phone = phoneInput.value.trim();
+
+            if (!name || !phone) return alert('חובה למלא שם וטלפון');
+
+            try {
+                await fetch(`${API_URL}/groups/add_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, name, phone })
+                });
+
+                // Clear inputs
+                nameInput.value = '';
+                phoneInput.value = '';
+
+                // Reload groups display
+                await loadGroupsDisplay();
+
+                // Re-open the group that was just edited
+                setTimeout(() => {
+                    const view = document.getElementById(`members-${groupId}`);
+                    if (view) view.style.display = 'block';
+                }, 100);
+
+            } catch (e) {
+                alert('שגיאה בהוספת חבר לקבוצה: ' + e.message);
+                console.error(e);
+            }
+        }
+
+        // Toggle edit mode for a member
+        function toggleEditMember(groupId, memberIdx, phone) {
+            const displayDiv = document.querySelector(`.member-display-${groupId}-${memberIdx}`);
+            const editDiv = document.querySelector(`.member-edit-${groupId}-${memberIdx}`);
+            const editBtn = document.querySelector(`.edit-member-btn-${groupId}-${memberIdx}`);
+            const saveBtn = document.querySelector(`.save-member-btn-${groupId}-${memberIdx}`);
+
+            if (displayDiv && editDiv && editBtn && saveBtn) {
+                const isEditing = editDiv.style.display !== 'none';
+
+                if (isEditing) {
+                    // Cancel edit
+                    displayDiv.style.display = 'flex';
+                    editDiv.style.display = 'none';
+                    editBtn.style.display = 'inline-block';
+                    saveBtn.style.display = 'none';
+                } else {
+                    // Start edit
+                    displayDiv.style.display = 'none';
+                    editDiv.style.display = 'flex';
+                    editBtn.style.display = 'none';
+                    saveBtn.style.display = 'inline-block';
+                }
+            }
+        }
+
+        // Save edited member
+        async function saveEditMember(groupId, memberIdx, oldPhone) {
+            const nameInput = document.querySelector(`.edit-name-${groupId}-${memberIdx}`);
+            const phoneInput = document.querySelector(`.edit-phone-${groupId}-${memberIdx}`);
+
+            if (!nameInput || !phoneInput) return;
+
+            const newName = nameInput.value.trim();
+            const newPhone = phoneInput.value.trim();
+
+            if (!newName || !newPhone) return alert('חובה למלא שם וטלפון');
+
+            try {
+                // Delete old member
+                await fetch(`${API_URL}/groups/delete_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, phone: oldPhone })
+                });
+
+                // Add updated member
+                await fetch(`${API_URL}/groups/add_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, name: newName, phone: newPhone })
+                });
+
+                // Reload groups display
+                await loadGroupsDisplay();
+
+                // Re-open the group
+                setTimeout(() => {
+                    const view = document.getElementById(`members-${groupId}`);
+                    if (view) view.style.display = 'block';
+                }, 100);
+
+            } catch (e) {
+                alert('שגיאה בעדכון חבר: ' + e.message);
+                console.error(e);
+            }
+        }
+
+        // New functions that work with memberId
+        function toggleEditMemberNew(memberId) {
+            console.log("Toggle edit for:", memberId);
+            const displayDiv = document.querySelector(`.member-display-${memberId}`);
+            const editDiv = document.querySelector(`.member-edit-${memberId}`);
+            const editBtn = document.querySelector(`.edit-member-btn-${memberId}`);
+            const saveBtn = document.querySelector(`.save-member-btn-${memberId}`);
+
+            if (!displayDiv || !editDiv || !editBtn || !saveBtn) {
+                console.error("Elements not found for:", memberId);
+                return;
+            }
+
+            const isEditing = editDiv.style.display !== 'none';
+            if (isEditing) {
+                displayDiv.style.display = 'flex';
+                editDiv.style.display = 'none';
+                editBtn.style.display = 'inline-block';
+                saveBtn.style.display = 'none';
+            } else {
+                displayDiv.style.display = 'none';
+                editDiv.style.display = 'flex';
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'inline-block';
+            }
+        }
+
+        async function saveEditMemberNew(memberId) {
+            const data = window.groupMembersData[memberId];
+            if (!data) return;
+
+            const nameInput = document.querySelector(`.edit-name-${memberId}`);
+            const phoneInput = document.querySelector(`.edit-phone-${memberId}`);
+
+            if (!nameInput || !phoneInput) return;
+
+            const newName = nameInput.value.trim();
+            const newPhone = phoneInput.value.trim();
+
+            if (!newName || !newPhone) return alert('חובה למלא שם וטלפון');
+
+            try {
+                // Delete old member
+                await fetch(`${API_URL}/groups/delete_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: data.groupId, phone: data.phone })
+                });
+
+                // Add updated member
+                await fetch(`${API_URL}/groups/add_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: data.groupId, name: newName, phone: newPhone })
+                });
+
+                // Reload groups display
+                await loadGroupsDisplay();
+
+                // Re-open the group
+                setTimeout(() => {
+                    const view = document.getElementById(`members-${data.groupId}`);
+                    if (view) view.style.display = 'block';
+                }, 100);
+
+            } catch (e) {
+                alert('שגיאה בעדכון חבר: ' + e.message);
+                console.error(e);
+            }
+        }
+        // --------------------
+
+        function populateHebrewDays() {
+            const select = document.getElementById('hebrewDay');
+            const hebrewDays = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "יא", "יב", "יג", "יד", "טו", "טז", "יז", "יח", "יט", "כ", "כא", "כב", "כג", "כד", "כה", "כו", "כז", "כח", "כט", "ל"];
+            hebrewDays.forEach(day => {
+                const opt = document.createElement('option');
+                opt.value = day;
+                opt.innerText = day;
+                select.appendChild(opt);
+            });
+        }
+
+        function toggleDateInputs() {
+            const isHebrew = document.querySelector('input[name="dateType"]:checked').value === 'hebrew';
+            document.getElementById('gregorianInput').style.display = isHebrew ? 'none' : 'block';
+            document.getElementById('hebrewInput').style.display = isHebrew ? 'block' : 'none';
+        }
+
+        function openModal(type, cat) {
+            currentType = type;
+            const modal = document.getElementById('mainModal');
+            const title = document.getElementById('modalTitle');
+            const msgBox = document.getElementById('evtMsg');
+
+            if (type === 'general') {
+                title.innerText = "תזמון הודעה כללית";
+                msgBox.value = "";
+            } else {
+                title.innerText = "הוספת שמחה חדשה";
+                msgBox.value = "מזל טוב! 🎉";
+            }
+
+            // Pre-select category if provided
+            if (cat) {
+                document.getElementById('evtGroup').value = cat;
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('mainModal').style.display = 'none';
+            editingEventId = null; // Reset editing state
+            // Reset custom field
+            document.getElementById('customSimchaGroup').style.display = 'none';
+        }
+
+        function handleSimchaTypeChange() {
+            const val = document.getElementById('simchaTypeSelect').value;
+            const customGroup = document.getElementById('customSimchaGroup');
+            customGroup.style.display = (val === 'custom') ? 'block' : 'none';
+            applyTemplate('modern');
+        }
+
+        function applyTemplate(style) {
+            const type = document.getElementById('simchaTypeSelect').value;
+            const name = document.getElementById('evtName').value || "[שם]";
+            let customT = document.getElementById('customSimchaType').value;
+
+            let simchaName = "השמחה";
+            if (type === 'birthday') simchaName = "יום הולדת";
+            if (type === 'wedding') simchaName = "החתונה";
+            if (type === 'anniversary') simchaName = "יום הנישואין";
+            if (type === 'bar_mitzvah') simchaName = "הבר מצווה";
+            if (type === 'bat_mitzvah') simchaName = "הבת מצווה";
+            if (type === 'brit') simchaName = "הברית";
+            if (type === 'custom' && customT) simchaName = customT;
+
+            const templates = {
+                modern: `מזל טוב ל${name} היקר! 🎉 ✨ מאחל לך מכל הלב המון בריאות טובה, אושר עד הגג, נחת ושלווה! 🌹 שכל משאלות ליבך יתגשמו לטובה, ותמשיך להפיץ אור ושמחה סביבך! ✨ עד 120 כעשרים בשמחה ובטוב לבב! 🥂 🎂`,
+                traditional: `מזל טוב וסימן טוב ל${name} לרגל ${simchaName}! 🕍 שתזכו לרוב נחת, בריאות איתנה וברכה בכל מעשה ידיכם. אמן! 🙏`,
+                warm: `אהוב/ה שלנו ${name}, מזל טוב מכל הלב לרגל ${simchaName}! ❤️ מאחלים לך את כל הטוב שבעולם, שתמיד תהיה/י מוקף/ת באהבה ושמחה. 🌹`
+            };
+
+            document.getElementById('evtMsg').value = templates[style] || "מזל טוב! 🎉";
+        }
+
+        async function checkStatus() {
+            const badge = document.getElementById('statusText');
+            const phoneEl = document.getElementById('statusPhone');
+            try {
+                const res = await fetch(`${API_URL}/status`);
+                if (!res.ok) throw new Error('Network response was not ok');
+                const data = await res.json();
+
+                if (data.status === 'connected') {
+                    badge.innerHTML = '<i class="fas fa-check"></i> מחובר';
+                    badge.style.borderColor = '#22c55e';
+                    badge.style.background = 'rgba(34, 197, 94, 0.2)';
+                    badge.style.color = '#22c55e';
+                    phoneEl.innerText = data.phone;
+                } else {
+                    badge.innerHTML = '<i class="fas fa-times"></i> מנותק';
+                    badge.style.borderColor = '#ef4444';
+                    badge.style.background = 'rgba(239, 68, 68, 0.2)';
+                    badge.style.color = '#ef4444';
+                    phoneEl.innerText = '--';
+                }
+            } catch (e) {
+                console.error('API Error', e);
+                badge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> שרת לא זמין';
+                badge.style.borderColor = '#fbbf24';
+                badge.style.background = 'rgba(251, 191, 36, 0.2)';
+                badge.style.color = '#fbbf24';
+                phoneEl.innerText = 'בדוק אם השרת פועל';
+            }
+        }
+
+        // --- TABS LOGIC ---
+        let currentCategory = 'Upcoming';
+
+        function switchTab(tabId) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Update content visibility
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+
+            // Load data for specific tab if needed
+            if (tabId === 'tab-events') loadEventsByCategory(currentCategory);
+            if (tabId === 'tab-purchases') loadStores();
+            if (tabId === 'tab-users') loadUsers();
+        }
+
+        function getSortValue(evt) {
+            if (evt.date_type === 'hebrew' && evt.hebrew_date) {
+                const months = ["תשרי", "חשוון", "כסלו", "טבת", "שבט", "אדר", "אדר א", "אדר ב", "ניסן", "אייר", "סיוון", "תמוז", "אב", "אלול"];
+                const parts = evt.hebrew_date.split(' ');
+                if (parts.length >= 2) {
+                    const dayStr = parts[0].replace(/[^\u05D0-\u05EA0-9]/g, '');
+                    // Simple Hebrew numeric conversion or direct parseInt
+                    let day = parseInt(dayStr);
+                    if (isNaN(day)) {
+                        const hebDays = { "א": 1, "ב": 2, "ג": 3, "ד": 4, "ה": 5, "ו": 6, "ז": 7, "ח": 8, "ט": 9, "י": 10, "יא": 11, "יב": 12, "יג": 13, "יד": 14, "טו": 15, "טז": 16, "יז": 17, "יח": 18, "יט": 19, "כ": 20, "כא": 21, "כב": 22, "כג": 23, "כד": 24, "כה": 25, "כו": 26, "כז": 27, "כח": 28, "כט": 29, "ל": 30 };
+                        day = hebDays[dayStr] || 0;
+                    }
+                    let mName = parts[1].startsWith('ב') ? parts[1].substring(1) : parts[1];
+                    const monthIdx = months.findIndex(m => mName.includes(m));
+                    if (monthIdx !== -1) return (monthIdx + 1) * 100 + day;
+                }
+            } else if (evt.gregorian_date) {
+                let d = evt.gregorian_date;
+                if (d.includes('-')) {
+                    const p = d.split('-');
+                    if (p.length === 3) return parseInt(p[1]) * 100 + parseInt(p[2]);
+                } else if (d.includes('.')) {
+                    const p = d.split('.');
+                    if (p.length === 2) return parseInt(p[1]) * 100 + parseInt(p[0]);
+                } else if (d.includes('/')) {
+                    const p = d.split('/');
+                    if (p.length === 2) return parseInt(p[1]) * 100 + parseInt(p[0]);
+                }
+            }
+            return 9999;
+        }
+
+        async function loadEventsByCategory(cat, btn) {
+            currentCategory = cat;
+            if (btn) {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/events`);
+                let events = await res.json();
+                window.allEventsData = events; // for editing
+
+                if (cat !== 'Upcoming') {
+                    events = events.filter(e => e.group === cat);
+                }
+
+                // Sort by date
+                events.sort((a, b) => getSortValue(a) - getSortValue(b));
+
+                const list = document.getElementById('eventsListMain');
+                list.innerHTML = '';
+
+                if (events.length === 0) {
+                    list.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px;">אין אנשי קשר בקטגוריית ${cat}</div>`;
+                    return;
+                }
+
+                events.forEach(evt => {
+                    const row = document.createElement('div');
+                    row.className = 'event-row';
+                    row.style.gridColumn = '1 / -1';
+                    row.style.background = '#1e293b';
+                    row.style.marginBottom = '10px';
+                    row.style.borderRight = '4px solid var(--secondary)';
+
+                    row.innerHTML = `
+                        <div class="event-info" style="cursor:pointer;" onclick="editEvent(${evt.id})">
+                             <div style="font-size:1.5em">${evt.type === 'general' ? '💬' : '🎂'}</div>
+                             <div>
+                                <div style="font-weight:bold; font-size:1.1em; color:var(--text);">${evt.owner}</div>
+                                <div style="font-size:0.85em; color:var(--secondary);">📅 ${evt.hebrew_date || ''} | ${evt.gregorian_date || ''}</div>
+                                <div style="font-size:0.8em; color:#94a3b8;">📞 ${evt.target_phone}</div>
+                             </div>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <button class="send-btn" onclick="editEvent(${evt.id})" style="background:#334155;"><i class="fas fa-edit"></i></button>
+                            <button class="send-btn" onclick="sendNow('${evt.owner_phone || evt.target_phone}', '${evt.msg_template}')" title="שלח ברכה עכשיו"><i class="fas fa-paper-plane"></i></button>
+                            <button class="send-btn" onclick="deleteEventRef(${evt.id})" style="background:#ef4444;"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    list.appendChild(row);
+                });
+            } catch (e) {
+                console.error('Load Cat Events Error', e);
+            }
+        }
+
+        let currentStoreId = null;
+
+        async function loadStores() {
+            try {
+                const res = await fetch(`${API_URL}/stores`);
+                allStores = await res.json();
+                const grid = document.getElementById('storesGrid');
+                grid.innerHTML = '';
+
+                // Show stores
+                stores.forEach((s, idx) => {
+                    grid.appendChild(createStoreCard(s, idx + 1));
+                });
+
+                // Fill rest with placeholders up to 6
+                for (let i = stores.length + 1; i <= 6; i++) {
+                    grid.appendChild(createEmptyStoreSlot(i));
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function createStoreCard(s, index) {
+            const card = document.createElement('div');
+            card.className = 'project-window';
+
+            // Background Image Logic
+            const bgImage = s.image ? `url('${s.image}')` : 'none';
+            const bgColor = s.image ? 'rgba(0,0,0,0.6)' : 'rgba(30, 41, 59, 0.9)';
+            const blendMode = s.image ? 'overlay' : 'normal';
+
+            card.style.background = bgColor;
+            card.style.backgroundImage = bgImage;
+            card.style.backgroundSize = 'cover';
+            card.style.backgroundPosition = 'center';
+            card.style.backgroundBlendMode = blendMode;
+
+            card.style.border = '1px solid var(--secondary)';
+            card.style.cursor = 'pointer';
+            card.style.position = 'relative';
+            card.style.overflow = 'hidden';
+            card.onclick = () => openManageStore(s);
+
+            const prodCount = s.products ? s.products.length : 0;
+
+            card.innerHTML = `
+                <div style="text-align:center; position:relative; z-index:2;">
+                    <div style="font-size:3em; margin-bottom:10px; text-shadow: 0 0 10px black;">${s.image ? '' : '🏪'}</div>
+                    <h3 style="color:var(--primary); margin:0; text-shadow: 2px 2px 4px black; font-size: 1.5em; background: rgba(0,0,0,0.5); display:inline-block; padding:5px 10px; border-radius:8px;">${s.name}</h3>
+                    <div style="color:#e2e8f0; font-size:0.9em; margin-bottom:15px; margin-top:5px; text-shadow: 1px 1px 2px black;">📞 ${s.phone}</div>
+                    <div style="background:rgba(15, 23, 42, 0.9); padding:10px; border-radius:10px; display:inline-block; border: 1px solid #334155;">
+                        <span style="font-weight:bold; color:#10b981;">${prodCount}</span> מוצרים במדף
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function createEmptyStoreSlot(index) {
+            const card = document.createElement('div');
+            card.className = 'project-window';
+            card.style.background = 'rgba(15, 23, 42, 0.3)';
+            card.style.border = '2px dashed #475569';
+            card.style.cursor = 'pointer';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.justifyContent = 'center';
+            card.style.alignItems = 'center';
+            card.onclick = () => {
+                document.getElementById('createStoreModal').style.display = 'flex';
+            };
+
+            card.innerHTML = `
+                <div style="font-size:2em; color:#475569;">➕</div>
+                <div style="color:#94a3b8; font-weight:bold; margin-top:10px;">הקמת חנות #${index}</div>
+            `;
+            return card;
+        }
+
+        async function createNewStore() {
+            const name = document.getElementById('newStoreName').value;
+            const phone = document.getElementById('newStorePhone').value;
+            const image = document.getElementById('newStoreImage').value;
+            if (!name) return alert('חובה להזין שם חנות');
+
+            await fetch(`${API_URL}/stores`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, image })
+            });
+            document.getElementById('newStoreName').value = '';
+            document.getElementById('newStorePhone').value = '';
+            document.getElementById('newStoreImage').value = '';
+            document.getElementById('createStoreModal').style.display = 'none';
+            loadStores();
+        }
+
+        function openManageStore(store) {
+            currentStoreId = store.id;
+            const modal = document.getElementById('manageStoreModal');
+
+            // Header
+            document.getElementById('manageStoreHeader').innerHTML = `
+                <h2 style="color:var(--secondary); margin:0;">${store.name}</h2>
+                <div style="color:#94a3b8;">בעלים: ${store.phone}</div>
+            `;
+
+            // Render Products
+            const list = document.getElementById('storeProductsList');
+            list.innerHTML = '';
+            if (store.products && store.products.length > 0) {
+                store.products.forEach(p => {
+                    const li = document.createElement('li');
+                    li.style.background = '#1e293b';
+                    li.style.marginBottom = '8px';
+                    li.style.padding = '10px';
+                    li.style.borderRadius = '8px';
+                    li.style.display = 'flex';
+                    li.style.justifyContent = 'space-between';
+                    li.style.alignItems = 'center';
+
+                    const imgHtml = p.image ? `<img src="${p.image}" style="width:40px; height:40px; border-radius:5px; object-fit:cover; border:1px solid #334155;">` : '<span style="font-size:1.5em;">📦</span>';
+
+                    li.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            ${imgHtml}
+                            <div style="display:flex; flex-direction:column;">
+                                <span style="font-weight:bold; color:white;">${p.name}</span>
+                                <span style="font-size:0.8em; color:#94a3b8; cursor:pointer; text-decoration:underline;" onclick='openEditProduct(${JSON.stringify(p)})'>ערוך מוצר ✏️</span>
+                            </div>
+                        </div>
+                        <span style="font-weight:bold; color:#10b981; background:rgba(16, 185, 129, 0.1); padding:5px 10px; border-radius:5px;">${p.price}₪</span>
+                    `;
+                    list.appendChild(li);
+                });
+            } else {
+                list.innerHTML = '<li style="color:#64748b; text-align:center; padding: 20px;">אין מוצרים עדיין. הוסף ראשון!</li>';
+            }
+
+            // Render Clients
+            const clientList = document.getElementById('storeClientsList');
+            clientList.innerHTML = '';
+            if (store.interested_clients && store.interested_clients.length > 0) {
+                store.interested_clients.forEach(c => {
+                    const li = document.createElement('li');
+                    li.style.background = '#1e293b';
+                    li.style.marginBottom = '5px';
+                    li.style.padding = '8px';
+                    li.style.borderRadius = '5px';
+                    li.style.display = 'flex';
+                    li.style.justifyContent = 'space-between';
+                    li.style.alignItems = 'center';
+
+                    let sourceIcon = '👤';
+                    if (c.source === 'whatsapp_user') sourceIcon = '📱';
+                    if (c.source === 'whatsapp_admin') sourceIcon = '🛡️';
+
+                    li.innerHTML = `
+                        <div>
+                            <span style="margin-right:5px;">${sourceIcon}</span>
+                            <span style="font-weight:bold; color:#e2e8f0;">${c.name}</span>
+                            <span style="font-size:0.8em; color:#94a3b8;">${c.phone}</span>
+                        </div>
+                        <span style="font-size:0.7em; color:#64748b;">${c.date}</span>
+                    `;
+                    clientList.appendChild(li);
+                });
+            } else {
+                clientList.innerHTML = '<li style="color:#64748b; text-align:center;">אין מתעניינים עדיין.</li>';
+            }
+
+            // Sync other tabs
+            loadStoreInvoices();
+            loadStoreLogs();
+
+            // Reset to first tab
+            const firstTabBtn = document.querySelector('.store-tab-btn');
+            if (firstTabBtn) switchStoreTab('store-tab-products', firstTabBtn);
+
+            modal.style.display = 'flex';
+        }
+
+        function switchStoreTab(tabId, btn) {
+            // Update buttons
+            document.querySelectorAll('.store-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update content visibility
+            document.querySelectorAll('.store-tab-content').forEach(content => content.style.display = 'none');
+            const target = document.getElementById(tabId);
+            if (target) target.style.display = 'flex';
+
+            // Special Loaders
+            if (tabId === 'store-tab-logs') loadStoreLogs();
+            if (tabId === 'store-tab-invoices') loadStoreInvoices();
+        }
+
+        async function createStoreInvoice() {
+            if (!currentStoreId) return;
+            const client = document.getElementById('invoiceClientName').value;
+            const amount = document.getElementById('invoiceAmount').value;
+            const items = document.getElementById('invoiceItems').value;
+
+            if (!client || !amount) return alert('נא למלא שם לקוח וסכום');
+
+            try {
+                const res = await fetch(`${API_URL}/stores/invoice`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ store_id: currentStoreId, client, amount, items })
+                });
+                if (res.ok) {
+                    alert('חשבונית נוצרה בהצלחה! ✅');
+                    document.getElementById('invoiceClientName').value = '';
+                    document.getElementById('invoiceAmount').value = '';
+                    document.getElementById('invoiceItems').value = '';
+                    loadStoreInvoices();
+                } else {
+                    alert('שגיאה ביצירת חשבונית');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadStoreInvoices() {
+            if (!currentStoreId) return;
+            try {
+                const res = await fetch(`${API_URL}/stores/invoices?store_id=${currentStoreId}`);
+                const data = await res.json();
+                const list = document.getElementById('storeInvoicesList');
+                if (!list) return;
+                list.innerHTML = '';
+                if (data.length === 0) {
+                    list.innerHTML = '<li style="color:#64748b; text-align:center; padding:15px;">אין חשבוניות עדיין.</li>';
+                    return;
+                }
+                [...data].reverse().forEach(inv => {
+                    const li = document.createElement('li');
+                    li.style.cssText = "background:#1e293b; padding:10px; margin-bottom:8px; border-radius:8px; border-right:3px solid #10b981; border-left: 1px solid #334155; display:flex; flex-direction:column; gap:5px;";
+
+                    const safeInv = JSON.stringify(inv).replace(/'/g, "&apos;");
+
+                    li.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:bold; color:#e2e8f0;">👤 ${inv.client}</span>
+                            <span style="font-weight:bold; color:#10b981; background:rgba(16,185,129,0.1); padding:2px 8px; border-radius:5px;">${inv.amount}₪</span>
+                        </div>
+                        <div style="font-size:0.85em; color:#94a3b8; margin-top:5px; background:rgba(0,0,0,0.2); padding:5px; border-radius:4px;">${inv.items || 'אין פירוט'}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+                             <span style="font-size:0.75em; color:#64748b;">📅 ${inv.date}</span>
+                             <button onclick='openPrintInvoice(${safeInv})' style="background:#475569; border:none; color:white; padding:3px 10px; border-radius:5px; cursor:pointer; font-size:0.8em;"><i class="fas fa-print"></i> הצג והדפס</button>
+                        </div>
+                    `;
+                    list.appendChild(li);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        function openPrintInvoice(inv) {
+            const store = allStores.find(s => s.id === currentStoreId);
+
+            document.getElementById('printStoreName').innerText = store ? store.name : "החנות שלי";
+            document.getElementById('printStorePhone').innerText = store ? store.phone : "";
+            document.getElementById('printDate').innerText = inv.date;
+            document.getElementById('printClient').innerText = inv.client;
+            document.getElementById('printId').innerText = inv.id;
+            document.getElementById('printItems').innerText = inv.items;
+            document.getElementById('printAmount').innerText = inv.amount;
+
+            // Update WhatsApp Share Link
+            const shareText = encodeURIComponent(`*חשבונית מ-${store ? store.name : 'SYD-AI'}*\n\nלקוח: ${inv.client}\nסכום: ${inv.amount}₪\nפירוט:\n${inv.items}\n\nתודה רבה! 🙏`);
+            const shareBtn = document.getElementById('shareInvoiceBtn');
+            shareBtn.onclick = () => window.open(`https://wa.me/?text=${shareText}`, '_blank');
+
+            document.getElementById('invoicePrintModal').style.display = 'flex';
+        }
+
+        async function loadStoreLogs() {
+            if (!currentStoreId) return;
+            try {
+                const res = await fetch(`${API_URL}/stores/logs?store_id=${currentStoreId}`);
+                const data = await res.json();
+                const container = document.getElementById('storeLogsContainer');
+                if (!container) return;
+                container.innerHTML = '';
+                if (data.length === 0) {
+                    container.innerHTML = '<div style="color:#64748b; text-align:center; padding:10px;">אין פעולות מתועדות עדיין.</div>';
+                    return;
+                }
+                [...data].reverse().forEach(log => {
+                    const div = document.createElement('div');
+                    div.style.cssText = "border-bottom:1px solid #1e293b; padding:8px 0; display:flex; gap:10px; align-items:flex-start;";
+
+                    let icon = 'ℹ️';
+                    if (log.action.includes('מוצר')) icon = '📦';
+                    if (log.action.includes('לקוח')) icon = '👤';
+                    if (log.action.includes('חשבונית')) icon = '🧾';
+
+                    div.innerHTML = `
+                        <span style="color:#64748b; font-size:0.8em; white-space:nowrap; padding-top:2px;">${log.date.split(' ')[1]}</span>
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="color:#fbbf24; font-weight:bold; font-size:0.95em;">${icon} ${log.action}</span>
+                            <span style="font-size:0.9em; color:#cbd5e1;">${log.details}</span>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function addStoreProduct() {
+            if (!currentStoreId) return;
+            const name = document.getElementById('newProdName').value;
+            const price = document.getElementById('newProdPrice').value;
+            const image = document.getElementById('newProdImage').value;
+            const barcode = document.getElementById('newProdBarcode').value;
+
+            if (!name || !price) return alert('חסרים פרטים (שם ומחיר חובה)');
+
+            await fetch(`${API_URL}/stores/product`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ store_id: currentStoreId, name, price, image, barcode })
+            });
+
+            alert('מוצר נוצר בהצלחה!');
+            document.getElementById('newProdName').value = '';
+            document.getElementById('newProdPrice').value = '';
+            document.getElementById('newProdImage').value = '';
+            document.getElementById('newProdBarcode').value = '';
+            document.getElementById('manageStoreModal').style.display = 'none';
+            loadStores();
+        }
+
+        async function addStoreClient() {
+            if (!currentStoreId) return;
+            const name = document.getElementById('newClientName').value;
+            const phone = document.getElementById('newClientPhone').value;
+            const product = document.getElementById('newClientProduct').value;
+            const notes = document.getElementById('newClientNotes').value;
+
+            if (!name || !phone) return alert('נא למלא שם וטלפון');
+
+            await fetch(`${API_URL}/stores/client`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ store_id: currentStoreId, name, phone, product, notes })
+            });
+
+            alert('לקוח עודכן ברשימה!');
+            document.getElementById('newClientName').value = '';
+            document.getElementById('newClientPhone').value = '';
+            document.getElementById('newClientProduct').value = '';
+            document.getElementById('newClientNotes').value = '';
+            document.getElementById('manageStoreModal').style.display = 'none';
+            loadStores();
+        }
+
+        function openEditProduct(p) {
+            document.getElementById('editProdId').value = p.id;
+            document.getElementById('editProdName').value = p.name;
+            document.getElementById('editProdPrice').value = p.price;
+            document.getElementById('editProdImage').value = p.image || '';
+            document.getElementById('editProdBarcode').value = p.barcode || '';
+            document.getElementById('editProductModal').style.display = 'flex';
+        }
+
+        async function saveProductChanges() {
+            const pId = document.getElementById('editProdId').value;
+            const name = document.getElementById('editProdName').value;
+            const price = document.getElementById('editProdPrice').value;
+            const image = document.getElementById('editProdImage').value;
+            const barcode = document.getElementById('editProdBarcode').value;
+
+            if (!name || !price) return alert('נא למלא שם ומחיר');
+
+            await fetch(`${API_URL}/stores/product`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    store_id: currentStoreId,
+                    product_id: pId,
+                    name, price, image, barcode
+                })
+            });
+
+            alert('המוצר עודכן!');
+            document.getElementById('editProductModal').style.display = 'none';
+            document.getElementById('manageStoreModal').style.display = 'none';
+            loadStores();
+        }
+
+        async function deleteProduct() {
+            if (!confirm('למחוק את המוצר הזה?')) return;
+            const pId = document.getElementById('editProdId').value;
+
+            await fetch(`${API_URL}/stores/product`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    store_id: currentStoreId,
+                    product_id: pId
+                })
+            });
+            alert('המוצר נמחק');
+            document.getElementById('editProductModal').style.display = 'none';
+            document.getElementById('manageStoreModal').style.display = 'none';
+            loadStores();
+        }
+        async function closeSale(id) {
+            if (!confirm('האם אתה בטוח שברצונך לסגור את המכירה?')) return;
+            try {
+                await fetch(`${API_URL}/purchases/close`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+                loadPurchases();
+            } catch (e) { alert('שגיאה בסגירת מכירה'); }
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch(`${API_URL}/received_all`);
+                let data = await res.json();
+
+                // EXCLUDE Shmachot people (source starts with "אירוע")
+                data = data.filter(u => !u.source.includes("אירוע") && !u.source.includes("קבוצה"));
+
+                const container = document.getElementById('receivedBody');
+                container.innerHTML = '';
+
+                if (data.length === 0) {
+                    container.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#94a3b8;">אין לקוחות חדשים / לא משויכים</td></tr>';
+                    return;
+                }
+
+                data.forEach(u => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${u.name}</td>
+                        <td dir="ltr">${u.phone}</td>
+                        <td style="color:#94a3b8;">${u.source}</td>
+                        <td><button onclick="alert('העברה לפרויקט בשלבי פיתוח')" style="background:var(--primary); border:none; color:white; padding:3px 8px; border-radius:4px; cursor:pointer;">שייך לפרויקט</button></td>
+                    `;
+                    container.appendChild(row);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+
+        function openEventsModal() {
+            document.getElementById('eventsWindow').style.display = 'flex';
+            loadEvents(); // ensuring fresh data
+        }
+
+        async function loadEvents() {
+            try {
+                const res = await fetch(`${API_URL}/events`);
+                const events = await res.json();
+
+                // Populate ALL lists
+                const lists = [
+                    document.getElementById('eventsList'),
+                    document.getElementById('windowEventsList'),
+                    document.getElementById('eventsListMain')
+                ];
+
+                lists.forEach(list => {
+                    if (!list) return;
+                    list.innerHTML = '';
+                    if (events.length === 0) {
+                        list.innerHTML = '<div style="text-align:center; color:#94a3b8;">אין אירועים קרובים</div>';
+                        return;
+                    }
+
+                    events.forEach(evt => {
+                        const dateDisplay = evt.date_type === 'hebrew' ? evt.hebrew_date : evt.gregorian_date;
+                        const row = document.createElement('div');
+                        row.className = 'event-row';
+                        row.innerHTML = `
+                            <div class="event-info">
+                                <div class="event-date">${dateDisplay}</div>
+                                <div style="font-size:1.5em">${evt.type === 'general' ? '💬' : '🎂'}</div>
+                                <div>
+                                    <div style="font-weight:bold; font-size:1.1em;">${evt.owner}</div>
+                                    <div style="font-size:0.8em; color:#94a3b8">${evt.msg_template.substring(0, 30)}...</div>
+                                </div>
+                            </div>
+                            <button class="send-btn" onclick="sendNow('${evt.owner_phone || evt.target_phone}', '${evt.msg_template}')">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        `;
+                        list.appendChild(row);
+                    });
+                });
+            } catch (e) { console.error('Load Events', e); }
+        }
+
+        async function saveEvent() {
+            const hDay = document.getElementById('hebrewDay').value;
+            const hMonth = document.getElementById('hebrewMonth').value;
+            const fullHebrew = (hDay && hMonth) ? `${hDay} ב${hMonth}` : '';
+
+            let sType = document.getElementById('simchaTypeSelect').value;
+            if (sType === 'custom') {
+                sType = document.getElementById('customSimchaType').value || 'general';
+            }
+
+            const data = {
+                owner: document.getElementById('evtName').value,
+                owner_phone: document.getElementById('evtOwnerPhone').value,
+                type: sType,
+                date_type: document.querySelector('input[name="dateType"]:checked').value,
+                gregorian_date: document.getElementById('evtDateG').value,
+                hebrew_date: fullHebrew,
+                target_phone: document.getElementById('evtTargetPhone').value,
+                msg_template: document.getElementById('evtMsg').value,
+                group: document.getElementById('evtGroup').value
+            };
+
+            try {
+                if (editingEventId) {
+                    // Replace mode - delete old first
+                    await fetch(`${API_URL}/delete_event`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: editingEventId })
+                    });
+                }
+
+                await fetch(`${API_URL}/add_event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                closeModal();
+                loadEvents();
+                // Refresh categorization view
+                loadEventsByCategory(currentCategory);
+                if (document.getElementById('receivedModal').style.display === 'flex') {
+                    loadReceived();
+                }
+                alert(editingEventId ? 'האירוע עודכן בהצלחה!' : 'האירוע נשמר בהצלחה!');
+            } catch (e) {
+                alert('שגיאה בשמירת האירוע');
+                console.error(e);
+            }
+        }
+
+        async function sendNow(phone, msg) {
+            if (confirm('לשלוח את ההודעה עכשיו?')) {
+                await fetch(`${API_URL}/send_now`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, msg })
+                });
+                alert('ההודעה נשלחה!');
+            }
+        }
+        async function sendEventNow() {
+            const phone = document.getElementById('evtTargetPhone').value;
+            const msg = document.getElementById('evtMsg').value;
+
+            if (!phone) return alert('חובה להזין מספר טלפון לשליחה מיידית');
+            if (!msg) return alert('חובה להזין תוכן הודעה');
+
+            if (confirm(`לשלוח עכשיו ל-${phone}?`)) {
+                await fetch(`${API_URL}/send_now`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, msg })
+                });
+                alert('ההודעה נשלחה בהצלחה!');
+                closeModal();
+            }
+        }
+
+        async function loadReceived() {
+            try {
+                // Fetch Groups AND Events
+                const [resGroups, resEvents] = await Promise.all([
+                    fetch(`${API_URL}/groups`),
+                    fetch(`${API_URL}/events`)
+                ]);
+                const groups = await resGroups.json();
+                const events = await resEvents.json();
+                window.allEventsData = events; // Store for editing
+
+                const list = document.getElementById('receivedListBody');
+                list.innerHTML = '';
+
+                let count = 0;
+
+                // 1. Group Members
+                groups.forEach(g => {
+                    if (!g.members) return;
+                    g.members.forEach(m => {
+                        count++;
+                        appendRow(list, m.name, m.phone, `קבוצה: ${g.name}`, g.id, true);
+                    });
+                });
+
+                // 2. Event Owners
+                events.forEach(e => {
+                    count++;
+                    const phone = e.owner_phone || e.target_phone || '';
+                    const desc = e.date_type === 'hebrew' ? e.hebrew_date : e.gregorian_date;
+                    appendRow(list, e.owner, phone, `אירוע: ${desc}`, e.id, false);
+                });
+
+                if (count === 0) list.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">אין נתונים</td></tr>';
+
+                // Add event listeners for edit buttons
+                document.querySelectorAll('.edit-received-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const rowId = this.getAttribute('data-row-id');
+                        const data = window.receivedMembersData[rowId];
+                        if (data) {
+                            editReceivedMember(data.groupId, data.phone, data.name);
+                        }
+                    });
+                });
+
+            } catch (e) { console.error(e); }
+        }
+
+        function appendRow(container, name, phone, source, id, isGroup) {
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #1e293b';
+            row.setAttribute('data-row-id', `row-${isGroup ? 'g' : 'e'}-${id}-${phone}`);
+
+            // Action buttons
+            let buttons = '';
+            if (isGroup) {
+                // Store data in a global map to avoid escaping issues
+                const rowId = `g-${id}-${phone}`;
+                window.receivedMembersData = window.receivedMembersData || {};
+                window.receivedMembersData[rowId] = { groupId: id, phone: phone, name: name };
+
+                buttons = `
+                    <button class="edit-received-btn" data-row-id="${rowId}" style="background:#fbbf24; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:5px;">✏️</button>
+                    <button onclick="deleteMember(${id}, '${phone}')" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">🗑️</button>
+                `;
+            } else {
+                buttons = `
+                    <button onclick="editEvent(${id})" style="background:#fbbf24; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:5px;">✏️</button>
+                    <button onclick="deleteEventRef(${id})" style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">🗑️</button>
+                `;
+            }
+
+            row.innerHTML = `
+                <td style="padding:10px;">${name}</td>
+                <td style="padding:10px;">${phone}</td>
+                <td style="padding:10px; font-size:0.9em; color:#94a3b8;">${source}</td>
+                <td style="padding:10px;">${buttons}</td>
+            `;
+            container.appendChild(row);
+        }
+
+        async function deleteEventRef(id) {
+            if (!confirm('למחוק אירוע זה?')) return;
+            await fetch(`${API_URL}/delete_event`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            });
+            loadReceived(); // Refresh this list
+            loadEvents(); // Refresh main list
+            loadEventsByCategory(currentCategory); // Refresh categoried list
+        }
+
+        async function deleteMember(groupId, phone) {
+            if (!confirm('האם למחוק איש קשר זה מהקבוצה?')) return;
+            try {
+                await fetch(`${API_URL}/groups/delete_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, phone: phone })
+                });
+
+                // Refresh groups display if modal is open
+                if (document.getElementById('groupsModal').style.display === 'flex') {
+                    await loadGroupsDisplay();
+                    // Re-open the group that was just edited
+                    setTimeout(() => {
+                        const view = document.getElementById(`members-${groupId}`);
+                        if (view) view.style.display = 'block';
+                    }, 100);
+                }
+
+                // Refresh received list if that modal is open
+                if (document.getElementById('receivedModal').style.display === 'flex') {
+                    loadReceived();
+                }
+            } catch (e) {
+                alert('שגיאה במחיקה');
+                console.error(e);
+            }
+        }
+
+        // Edit member from received list
+        async function editReceivedMember(groupId, oldPhone, oldName) {
+            const newName = prompt('שם חדש:', oldName);
+            if (newName === null) return; // User cancelled
+
+            const newPhone = prompt('טלפון חדש:', oldPhone);
+            if (newPhone === null) return; // User cancelled
+
+            // Check if anything changed
+            if (newName.trim() === oldName && newPhone.trim() === oldPhone) {
+                return; // Nothing changed
+            }
+
+            // Update member
+            await updateMember(groupId, oldPhone, newName.trim() || oldName, newPhone.trim() || oldPhone);
+        }
+
+        async function updateMember(groupId, oldPhone, newName, newPhone) {
+            try {
+                // Delete old
+                await fetch(`${API_URL}/groups/delete_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, phone: oldPhone })
+                });
+
+                // Add new
+                await fetch(`${API_URL}/groups/add_member`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id: groupId, name: newName, phone: newPhone })
+                });
+
+                loadReceived();
+            } catch (e) {
+                alert('שגיאה בעדכון');
+                console.error(e);
+            }
+        }
+
+        let editingEventId = null;
+
+        // Edit event - opens the main modal with event data
+        async function editEvent(eventId) {
+            const event = (window.allEventsData || []).find(e => e.id == eventId);
+            if (!event) return;
+
+            editingEventId = eventId;
+            openModal('event');
+            document.getElementById('modalTitle').innerText = "עריכת אירוע";
+
+            document.getElementById('evtName').value = event.owner || "";
+            document.getElementById('evtOwnerPhone').value = event.owner_phone || event.target_phone || "";
+            document.getElementById('evtMsg').value = event.msg_template || "מזל טוב! 🎉";
+
+            // Populate Simcha Type
+            const typeSelect = document.getElementById('simchaTypeSelect');
+            const customInput = document.getElementById('customSimchaType');
+            const customGroup = document.getElementById('customSimchaGroup');
+
+            // Check if it's a standard type
+            let found = false;
+            for (let i = 0; i < typeSelect.options.length; i++) {
+                if (typeSelect.options[i].value === event.type) {
+                    typeSelect.value = event.type;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                typeSelect.value = 'custom';
+                customInput.value = event.type || "";
+                customGroup.style.display = 'block';
+            } else {
+                customGroup.style.display = 'none';
+                customInput.value = '';
+            }
+
+            if (event.date_type === 'hebrew') {
+                document.querySelector('input[name="dateType"][value="hebrew"]').checked = true;
+                toggleDateInputs();
+
+                // Parse hebrew_date (e.g., "י שבט")
+                const parts = (event.hebrew_date || "").split(' ');
+                if (parts.length >= 2) {
+                    document.getElementById('hebrewDay').value = parts[0];
+                    document.getElementById('hebrewMonth').value = parts[1];
+                }
+            } else {
+                document.querySelector('input[name="dateType"][value="gregorian"]').checked = true;
+                toggleDateInputs();
+
+                // Format: YYYY-MM-DD
+                if (event.gregorian_date) {
+                    const dateParts = event.gregorian_date.split('/');
+                    if (dateParts.length === 3) {
+                        // Convert MM/DD/YYYY to YYYY-MM-DD for date input
+                        const formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+                        document.getElementById('evtDateG').value = formattedDate;
+                    }
+                }
+            }
+
+            // Populate category
+            document.getElementById('evtGroup').value = event.group || "משפחה";
+        }
+
+        function openReceivedModal() {
+            document.getElementById('receivedModal').style.display = 'flex';
+            loadReceived();
+        }
+
+        async function openBroadcastModal() {
+            const modal = document.getElementById('broadcastModal');
+            const select = document.getElementById('broadcastGroupSelect');
+
+            // Re-populate group list
+            try {
+                const res = await fetch(`${API_URL}/groups`);
+                const groups = await res.json();
+
+                // Keep the 'all' option
+                select.innerHTML = '<option value="all">כל הרשומים (כולם)</option>';
+                groups.forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g.id;
+                    opt.innerText = g.name;
+                    select.appendChild(opt);
+                });
+            } catch (e) { console.error('Error loading groups for broadcast', e); }
+
+            modal.style.display = 'flex';
+        }
+
+        async function sendBroadcast() {
+            const groupId = document.getElementById('broadcastGroupSelect').value;
+            const message = document.getElementById('broadcastMsgText').value.trim();
+            const date = document.getElementById('broadcastDate').value;
+            const time = document.getElementById('broadcastTime').value;
+            const btn = document.getElementById('broadcastBtn');
+
+            if (!message) return alert('חובה להזין תוכן הודעה');
+
+            const isScheduled = date && time;
+            const groupName = document.getElementById('broadcastGroupSelect').options[document.getElementById('broadcastGroupSelect').selectedIndex].text;
+
+            if (isScheduled) {
+                if (!confirm(`לתזמן הודעה ל"${groupName}" בתאריך ${date} בשעה ${time}?`)) return;
+            } else {
+                if (!confirm(`האם אתה בטוח שברצונך לשלוח הודעה מיידית לכל המנויים ב"${groupName}"?`)) return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = isScheduled ? 'מתזמן...' : 'שולח...';
+
+            try {
+                const endpoint = isScheduled ? '/api/add_event' : '/api/broadcast_group';
+                const payload = isScheduled ? {
+                    type: 'scheduled_broadcast',
+                    owner: `שידור: ${groupName}`,
+                    target_phone: groupId, // Using target_phone to store groupId for scheduled broadcasts
+                    msg_template: message,
+                    date_type: 'gregorian',
+                    gregorian_date: date,
+                    scheduled_time: time
+                } : {
+                    group_id: groupId,
+                    message: message
+                };
+
+                const res = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.status === 'started' || data.status === 'ok') {
+                    alert(isScheduled ? 'ההודעה תוזמנה בהצלחה!' : `השידור התחיל! נשלח ל-${data.target_count} אנשי קשר ברקע.`);
+                    document.getElementById('broadcastModal').style.display = 'none';
+                    document.getElementById('broadcastMsgText').value = '';
+                    document.getElementById('broadcastDate').value = '';
+                    document.getElementById('broadcastTime').value = '';
+                    loadEvents();
+                } else {
+                    alert('שגיאה: ' + (data.message || 'פעולה נכשלה'));
+                }
+            } catch (e) {
+                alert('תקלה בתקשורת עם השרת');
+                console.error(e);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '🚀 שלח/תזמן שידור';
+            }
+        }
+
+        // Backward compatibility if needed
+        async function runBroadcastTest() {
+            openBroadcastModal();
+        }
+
+        async function openResponseModal() {
+            const modal = document.getElementById('responseModal');
+            try {
+                const res = await fetch(`${API_URL}/bot_response`);
+                const data = await res.json();
+                document.getElementById('botResponseText').value = data.response || "";
+                document.getElementById('geminiApiKey').value = data.gemini_api_key || "";
+                document.getElementById('enableCommands').checked = data.enable_commands !== false;
+                document.getElementById('systemInstruction').value = data.system_instruction || "";
+            } catch (e) { console.error('Error loading bot response', e); }
+            modal.style.display = 'flex';
+        }
+
+        function addEmoji(emoji) {
+            const txt = document.getElementById('botResponseText');
+            txt.value += emoji;
+            txt.focus();
+        }
+
+        async function saveBotResponse() {
+            const text = document.getElementById('botResponseText').value.trim();
+            const apiKey = document.getElementById('geminiApiKey').value.trim();
+            if (!text) return alert('חובה להזין תוכן לתגובה');
+
+            try {
+                const res = await fetch(`${API_URL}/bot_response`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        response: text,
+                        gemini_api_key: apiKey,
+                        enable_commands: document.getElementById('enableCommands').checked,
+                        system_instruction: document.getElementById('systemInstruction').value
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    alert('הגדרות עודכנו בהצלחה!');
+                    document.getElementById('responseModal').style.display = 'none';
+                }
+            } catch (e) { alert('שגיאה בשמירה'); }
+        }
+        async function runAiTest() {
+            const prompt = document.getElementById('aiTestInput').value.trim();
+            const resultBox = document.getElementById('aiTestResult');
+            if (!prompt) return;
+
+            resultBox.innerText = "הבוט חושב... 🤔";
+            try {
+                const res = await fetch(`${API_URL}/test_ai`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                const data = await res.json();
+                if (data.reply) {
+                    resultBox.innerText = data.reply;
+                } else {
+                    resultBox.innerText = "שגיאה בבדיקה: " + (data.error || "וודא שמפתח ה-API תקין.");
+                }
+            } catch (e) {
+                resultBox.innerText = "תקלה בתקשורת עם השרת.";
+            }
+        }
+        function openAddSaleModal() {
+            document.getElementById('addSaleModal').style.display = 'flex';
+        }
+
+        async function saveNewSale() {
+            const client_name = document.getElementById('saleClientName').value.trim();
+            const product_name = document.getElementById('saleProductName').value.trim();
+            const client_email = document.getElementById('saleClientEmail').value.trim();
+            const price = document.getElementById('salePrice').value.trim();
+
+            if (!client_name || !product_name) return alert('נא למלא שם לקוח ומוצר');
+
+            try {
+                const res = await fetch(`${API_URL}/purchases`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_name: client_name,
+                        product_name: product_name,
+                        client_email: client_email,
+                        price: price
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    document.getElementById('addSaleModal').style.display = 'none';
+                    // Clear fields
+                    document.getElementById('saleClientName').value = '';
+                    document.getElementById('saleProductName').value = '';
+                    document.getElementById('saleClientEmail').value = '';
+                    document.getElementById('salePrice').value = '';
+                    loadPurchases();
+                }
+            } catch (e) { alert('שגיאה בשמירת המכירה'); }
+        }
+        let html5QrcodeScanner = null;
+        let currentBarcodeField = null;
+
+        function startScanner(fieldId) {
+            currentBarcodeField = fieldId;
+            resetScannerView(); // Reset view to camera mode
+            document.getElementById('scannerModal').style.display = 'flex';
+            document.getElementById('hiddenImageBase64').value = ""; // Clear old snapshot
+
+            if (!html5QrcodeScanner) {
+                // Initialize scanner
+                html5QrcodeScanner = new Html5Qrcode("reader");
+            }
+
+            html5QrcodeScanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                (decodedText, decodedResult) => {
+                    // Success
+                    console.log(`Scan matched = ${decodedText}`, decodedResult);
+                    handleScanSuccess(decodedText);
+                },
+                (errorMessage) => {
+                    // parse error, ignore it.
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('שגיאה בהפעלת מצלמה. וודא אישור דפדפן.');
+                });
+        }
+
+        async function scanBarcodeFile(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (!html5QrcodeScanner) {
+                    html5QrcodeScanner = new Html5Qrcode("reader");
+                }
+
+                try {
+                    // Start a temporary scan to ensure reader is ready
+                    const decodedText = await html5QrcodeScanner.scanFile(file, true);
+                    console.log(`File scan matched = ${decodedText}`);
+                    handleScanSuccess(decodedText);
+                } catch (err) {
+                    console.error(err);
+                    alert('לא הצלחתי לזהות ברקוד בתמונה הזו. נסה תמונה ברורה יותר.');
+                }
+                // Clear the input so it can be used again for the same file if needed
+                input.value = "";
+            }
+        }
+
+        function handleScanSuccess(decodedText) {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().catch(ignore => { });
+            }
+
+            // CASE 1: Updating a specific field (e.g., Edit Modal)
+            if (currentBarcodeField && currentBarcodeField !== 'newProdBarcode' && currentBarcodeField !== 'scannedBarcode') {
+                const targetField = document.getElementById(currentBarcodeField);
+                if (targetField) {
+                    targetField.value = decodedText;
+                    // Auto-identify if it's a barcode field
+                    if (currentBarcodeField.includes('Barcode')) {
+                        const nameFieldId = currentBarcodeField.replace('Barcode', 'Name');
+                        identifyProduct(decodedText, nameFieldId);
+                    }
+                }
+                document.getElementById('scannerModal').style.display = 'none';
+                return;
+            }
+
+            // CASE 2: New Product Save Flow (Quick Add or from Manage Store)
+            document.getElementById('reader-container').style.display = 'none';
+            document.getElementById('scanResultContainer').style.display = 'block';
+
+            const nameField = document.getElementById('scannedProdName');
+            const barcodeField = document.getElementById('scannedBarcode');
+
+            barcodeField.value = decodedText;
+            nameField.value = "מזהה בבינה מלאכותית... 🤖";
+
+            // Sync with the background form fields if they exist
+            if (document.getElementById('newProdBarcode')) document.getElementById('newProdBarcode').value = decodedText;
+            if (document.getElementById('newProdName')) document.getElementById('newProdName').value = "מזהה...";
+
+            identifyCurrentProduct(true);
+        }
+
+        function showManualInput() {
+            document.getElementById('productDataArea').style.display = 'block';
+            document.getElementById('newProdBarcode').value = "";
+            document.getElementById('newProdName').value = "";
+            document.getElementById('saveProductArea').style.display = 'block';
+            document.getElementById('newProdBarcode').focus();
+        }
+
+        async function handleProductFile(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                document.getElementById('productDataArea').style.display = 'block';
+                document.getElementById('newProdName').value = "מנסה לזהות מהתמונה...";
+
+                if (!html5QrcodeScanner) {
+                    html5QrcodeScanner = new Html5Qrcode("reader");
+                }
+
+                try {
+                    // Try to extract barcode first
+                    const decodedText = await html5QrcodeScanner.scanFile(file, true);
+                    document.getElementById('newProdBarcode').value = decodedText;
+                } catch (e) {
+                    document.getElementById('newProdBarcode').value = "לא נמצא ברקוד (זיהוי ויזואלי)...";
+                }
+
+                // Convert to b64 for AI Identify if barcode fails? Or just identification.
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('hiddenImageBase64').value = e.target.result.split(',')[1];
+                    identifyCurrentProduct();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function captureSnapshot() {
+            if (!html5QrcodeScanner) return;
+
+            try {
+                const video = document.querySelector("#reader video");
+                if (!video) return;
+
+                const canvas = document.createElement("canvas");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const dataUrl = canvas.toDataURL("image/jpeg");
+                const base64 = dataUrl.split(',')[1];
+
+                // Set as current image context
+                document.getElementById('hiddenImageBase64').value = base64;
+
+                // Try to find barcode in the snapshot immediately
+                try {
+                    const result = await html5QrcodeScanner.scanFile(dataURLtoFile(dataUrl, "snapshot.jpg"), true);
+                    handleScanSuccess(result);
+                } catch (e) {
+                    // If no barcode found in snapshot, just treat as generic image identification
+                    handleScanSuccess("לא נמצא ברקוד - זיהוי תמונה...");
+                }
+            } catch (err) {
+                console.error("Snapshot failed", err);
+                alert("לא הצלחתי לצלם. וודא שהמצלמה פועלת.");
+            }
+        }
+
+        // Helper to convert dataURL back to File for the scanner library
+        function dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, { type: mime });
+        }
+
+        async function identifyCurrentProduct(isFromScannerModal = false) {
+            const barcode = isFromScannerModal ? document.getElementById('scannedBarcode').value : document.getElementById('newProdBarcode').value;
+            const imageB64 = document.getElementById('hiddenImageBase64').value;
+            const targetField = isFromScannerModal ? document.getElementById('scannedProdName') : document.getElementById('newProdName');
+
+            if (!barcode && !imageB64) return;
+
+            targetField.value = "מזהה... 🤖";
+            if (!isFromScannerModal) document.getElementById('saveProductArea').style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_URL}/ai/identify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        barcode: barcode && !barcode.includes("...") ? barcode : null,
+                        image: imageB64
+                    })
+                });
+                const data = await res.json();
+                if (data.name) {
+                    targetField.value = data.name;
+                    if (!isFromScannerModal) {
+                        document.getElementById('saveProductArea').style.display = 'block';
+                        document.getElementById('newProdPrice').focus();
+                    } else {
+                        // In scanner modal
+                        document.getElementById('scannedProdPrice').focus();
+                    }
+                } else {
+                    targetField.value = "מוצר לא זוהה - הקלד ידנית";
+                    if (!isFromScannerModal) document.getElementById('saveProductArea').style.display = 'block';
+                }
+            } catch (e) {
+                console.error(e);
+                targetField.value = "";
+                if (!isFromScannerModal) document.getElementById('saveProductArea').style.display = 'block';
+            }
+        }
+
+        function resetScannerView() {
+            document.getElementById('reader-container').style.display = 'block';
+            document.getElementById('scanResultContainer').style.display = 'none';
+            document.getElementById('scannedProdName').value = "";
+            document.getElementById('scannedProdPrice').value = "";
+
+            if (html5QrcodeScanner && document.getElementById('scannerModal').style.display === 'flex') {
+                startScanner(currentBarcodeField);
+            }
+        }
+
+        async function confirmAndSaveScan() {
+            const name = document.getElementById('scannedProdName').value;
+            const price = document.getElementById('scannedProdPrice').value;
+            const barcode = document.getElementById('scannedBarcode').value;
+
+            if (!name || !price) return alert('חובה להזין שם ומחיר לפני השמירה');
+
+            if (!currentStoreId) {
+                // If we don't have a store ID, try to get the first one
+                try {
+                    const res = await fetch(`${API_URL}/stores`);
+                    const stores = await res.json();
+                    if (stores.length > 0) currentStoreId = stores[0].id;
+                } catch (e) { }
+            }
+
+            if (!currentStoreId) return alert('לא נבחרה חנות לשמירה');
+
+            try {
+                await fetch(`${API_URL}/stores/product`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ store_id: currentStoreId, name, price, barcode })
+                });
+
+                alert('המוצר נשמר בהצלחה! 🎉');
+                stopScanner();
+                loadStores();
+            } catch (e) {
+                alert('שגיאה בשמירת המוצר');
+            }
+        }
+
+        async function identifyProduct(barcode, fieldId) {
+            if (!barcode) return;
+            const targetField = document.getElementById(fieldId);
+            const originalVal = targetField.value;
+            targetField.value = "מנסה לזהות מוצר... 🤖";
+
+            try {
+                const res = await fetch(`${API_URL}/ai/identify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ barcode: barcode })
+                });
+                const data = await res.json();
+                if (data.name) {
+                    targetField.value = data.name;
+                } else {
+                    targetField.value = originalVal || "";
+                }
+            } catch (e) {
+                console.error(e);
+                targetField.value = originalVal || "";
+            }
+        }
+
+        function stopScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then((ignore) => {
+                    document.getElementById('scannerModal').style.display = 'none';
+                }).catch((err) => {
+                    console.error("Stop failed. ", err);
+                    document.getElementById('scannerModal').style.display = 'none';
+                });
+            } else {
+                document.getElementById('scannerModal').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,3 @@
+whatsapp_bot_session\
+.git\
+__pycache__\

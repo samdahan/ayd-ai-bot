@@ -1,0 +1,5 @@
+whatsapp_bot_session/
+__pycache__/
+*.log
+.env
+exclude_list.txt

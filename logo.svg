@@ -1,0 +1,35 @@
+<svg width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="neonGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#008080;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <path id="textPathTop" d="M 40,125 A 85,85 0 0,1 210,125" />
+    <path id="textPathBot" d="M 45,125 A 80,80 0 0,0 205,125" />
+  </defs>
+  
+  <circle cx="125" cy="125" r="120" fill="#05101a" />
+  <circle cx="125" cy="125" r="110" stroke="url(#neonGrad)" stroke-width="3" fill="none" filter="url(#glow)" stroke-dasharray="10 5"/>
+  <circle cx="125" cy="125" r="95" stroke="#00ffff" stroke-width="1" fill="none" opacity="0.6"/>
+  
+  <text fill="#00ffff" font-family="Arial, sans-serif" font-weight="bold" font-size="24" letter-spacing="4" filter="url(#glow)">
+    <textPath href="#textPathTop" startOffset="50%" text-anchor="middle">DOBISAM</textPath>
+  </text>
+  <text fill="#00ffff" font-family="Arial, sans-serif" font-weight="bold" font-size="16" letter-spacing="2" opacity="0.8">
+    <textPath href="#textPathBot" startOffset="50%" text-anchor="middle">DAHAN FAMILY</textPath>
+  </text>
+
+  <g transform="translate(75, 55) scale(1)">
+    <path d="M10,60 L90,60 L100,75 L0,75 Z" fill="#00ffff" opacity="0.9" filter="url(#glow)"/> 
+    <path d="M25,60 L25,30 Q50,10 75,30 L75,60" fill="#00ffff" opacity="0.7"/> 
+    <path d="M30,75 L70,75 L70,95 Q70,125 50,135 Q30,125 30,95 Z" fill="#008080" opacity="0.8"/>
+    <path d="M10,130 Q50,150 90,130 L90,160 L10,160 Z" fill="url(#neonGrad)" opacity="0.6"/>
+  </g>
+</svg>
